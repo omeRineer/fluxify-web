@@ -1,0 +1,40 @@
+<aside class="chat-sidebar">
+    <div class="sidebar-search">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Search users or channels..." />
+        </div>
+    </div>
+
+    <div class="user-list">
+        <!-- Ahmet Yılmaz Kartı -->
+        <a [routerLink]="['/chat', 'history']" routerLinkActive="active" class="user-card">
+            <div class="avatar-wrapper">
+                <div class="user-avatar">AD</div>
+                <span class="status-badge online"></span>
+            </div>
+            <div class="user-details">
+                <div class="user-meta">
+                    <span class="user-name">Ahmet Yılmaz</span>
+                    <span class="chat-time">12:45 PM</span>
+                </div>
+                <p class="last-message">SignalR bağlantısı başarıyla kuruldu.</p>
+            </div>
+        </a>
+
+        <!-- Mehmet Demir Kartı -->
+        <a [routerLink]="['/chat', 'mehmet-demir']" routerLinkActive="active" class="user-card">
+            <div class="avatar-wrapper">
+                <div class="user-avatar">MD</div>
+                <span class="status-badge idle"></span>
+            </div>
+            <div class="user-details">
+                <div class="user-meta">
+                    <span class="user-name">Mehmet Demir</span>
+                    <span class="chat-time">10:30 AM</span>
+                </div>
+                <p class="last-message">Firebase token yenileme hatası...</p>
+            </div>
+        </a>
+    </div>
+</aside>

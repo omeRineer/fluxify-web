@@ -1,0 +1,34 @@
+<aside class="sidebar">
+    <!-- Logo Bölümü -->
+    <div class="logo-area">
+        <div class="logo-icon">
+            <i class="fa-solid fa-bolt"></i>
+        </div>
+        <div class="logo-text">
+            <h2>Fluxify</h2>
+            <span>Console v1.0</span>
+        </div>
+    </div>
+
+    <!-- Navigasyon Linkleri -->
+    <nav class="nav-menu">
+        <a routerLink="/" 
+           routerLinkActive="active"
+           [routerLinkActiveOptions]="{ exact: true }"
+           class="nav-item">
+            <i class="fa-solid fa-chart-pie nav-icon"></i>
+            <span>Dashboard</span>
+        </a>
+        <a routerLink="/chat" 
+           routerLinkActive="active"
+           class="nav-item">
+            <i class="fa-regular fa-comment"></i>
+            <span>Sohbet</span>
+        </a>
+    </nav>
+
+    <!-- Alt Bilgi / Çevre Belirteci -->
+    <div class="sidebar-footer">
+
+    </div>
+</aside>

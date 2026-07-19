@@ -1,7 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
-import { DashboardLayout } from './app/core/layouts/dashboard-layout/dashboard-layout';
+import { MainLayout } from './app/core/layouts/main-layout/main-layout';
 
-bootstrapApplication(DashboardLayout, appConfig)
+bootstrapApplication(MainLayout, appConfig)
   .catch((err) => console.error(err));

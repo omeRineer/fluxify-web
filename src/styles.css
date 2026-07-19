@@ -1,1 +1,59 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.css */
+
+:root {
+  /* Renk Paleti - Slate Midnight Teması */
+  --bg-main: #0b0f19;         /* Ana arka plan */
+  --bg-surface: #151b2c;      /* Kartlar, sidebar ve header arka planı */
+  --bg-surface-hover: #1e263f;/* Hover durumları */
+  
+  --border-color: #222c47;    /* İnce çizgiler ve sınırlar */
+  
+  /* Yazı Renkleri */
+  --text-primary: #f3f4f6;    /* Parlak beyaz/gri - Ana metinler */
+  --text-secondary: #9ca3af;  /* Soluk gri - Açıklamalar ve ikonlar */
+  --text-muted: #6b7280;     /* Çok soluk gri - Devre dışı veya önemsiz metinler */
+  
+  /* Aksan ve Durum Renkleri */
+  --color-primary: #3b82f6;    /* Canlı Mavi - Butonlar, aktif linkler */
+  --color-primary-hover: #2563eb;
+  --color-success: #10b981;    /* Zümrüt Yeşili - Canlı bağlantı (SignalR Active) */
+  --color-warning: #f59e0b;    /* Turuncu - Uyarılar */
+  --color-danger: #ef4444;     /* Kırmızı - Hatalar / Firebase Token sorunları */
+  
+  /* Düzen ve Boşluklar */
+  --sidebar-width: 260px;
+  --header-height: 70px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition-fast: 0.2s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Basit Scrollbar Özelleştirme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
