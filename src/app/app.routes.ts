@@ -10,7 +10,8 @@ export const routes: Routes = [
         path: 'chat',
         component: Chat,
         children: [
-            { path: 'history', loadComponent: () => import('./pages/chat/components/chat-history/chat-history').then(m => m.ChatHistory) },
+            { path: ':roomId', loadComponent: () => import('./pages/chat/components/chat-history/chat-history').then(m => m.ChatHistory) },
         ]
     }
 ];
+    

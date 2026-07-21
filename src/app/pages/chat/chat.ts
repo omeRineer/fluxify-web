@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ChatRooms } from './components/chat-rooms/chat-rooms';
 import { RouterModule } from '@angular/router';
+import { ChatChannel } from '../../core/services/hubs/chat-channel';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-chat',
+  standalone: true,
   imports: [
     ChatRooms,
     RouterModule
@@ -12,5 +15,5 @@ import { RouterModule } from '@angular/router';
   styleUrl: './chat.css',
 })
 export class Chat {
-
+  
 }

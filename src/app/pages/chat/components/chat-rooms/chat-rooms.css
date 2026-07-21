@@ -100,8 +100,20 @@
   border: 2px solid var(--bg-surface);
 }
 
-.status-badge.online { background-color: var(--color-success); }
-.status-badge.idle { background-color: var(--color-warning); }
+.status-badge.online { 
+  background-color: var(--color-success); 
+}
+
+.status-badge.away,
+.status-badge.idle { 
+  background-color: var(--color-warning); 
+}
+.status-badge.busy { 
+  background-color: var(--color-danger); /* veya var(--color-error) */
+}
+.status-badge.offline { 
+  background-color: #64748b; /* veya var(--color-gray-400) gibi nötr bir renk */
+}
 
 .user-details {
   flex: 1;

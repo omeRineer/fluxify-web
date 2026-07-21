@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavItem } from '../../../../models/ui/nav-item';
+import { NavItem } from '../../../../../core/models/ui/nav-item';
 import { RouterLinkActive, RouterModule } from '@angular/router';
 
 @Component({
