@@ -1,19 +1,22 @@
 <aside class="chat-sidebar">
-    <app-spinner [loading]="isLoading()" message="Yükleniyor">
-        <div class="sidebar-search">
-            <div class="search-input-wrapper">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" placeholder="Search users or channels..." />
-            </div>
+    <div class="sidebar-search">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" placeholder="Search users or channels..." />
         </div>
+    </div>
 
 
-        <div class="user-list">
+    <div class="user-list">
+
+        @if(isLoading()){
+        <app-spinner></app-spinner>
+        }
+        @else {
             @for (room of allRooms(); track room.id) {
-                <a [routerLink]="['/chat', room.id]" routerLinkActive="active" class="user-card">
+                <a (click)="selectRoom(room)" [routerLink]="['/chat', room.id]" routerLinkActive="active" class="user-card">
                     <div class="avatar-wrapper">
                         <div class="user-avatar">{{ room.title[0].toUpperCase() }}{{ room.title[1].toUpperCase() }}</div>
-                        <span class="status-badge"></span>
                     </div>
                     <div class="user-details">
                         <div class="user-meta">
@@ -24,8 +27,7 @@
                     </div>
                 </a>
             }
+        }
 
-
-        </div>
-    </app-spinner>
+    </div>
 </aside>

@@ -15,37 +15,21 @@ export class ChatService extends BaseHttpService {
     }
 
     getList(): Observable<ApiDataResponse<DataList<ChatDto.List>>> {
-        return this.get<ApiDataResponse<DataList<ChatDto.List>>>(``, {
-            headers: {
-                "Fluxify-Api-Key": "bVNONIPtXjY9U2S_1w7yTmzG02Yui5w4wfH1v5dFQletj3vFms9gdPJEy3USx8pO"
-            }
-        })
+        return this.get<ApiDataResponse<DataList<ChatDto.List>>>(``)
     }
 
     getHistory(chatId: string): Observable<ApiDataResponse<DataList<MessageDto.List>>> {
-        return this.get<ApiDataResponse<DataList<MessageDto.List>>>(`/${chatId}/history`, {
-            headers: {
-                "Fluxify-Api-Key": "bVNONIPtXjY9U2S_1w7yTmzG02Yui5w4wfH1v5dFQletj3vFms9gdPJEy3USx8pO"
-            }
-        })
+        return this.get<ApiDataResponse<DataList<MessageDto.List>>>(`/${chatId}/history`)
     }
 
     create(title: string, users: string[]): Observable<ApiDataResponse<string>> {
         return this.post<ApiDataResponse<string>>(``, {
             title: title,
             userIds: users
-        }, {
-            headers: {
-                "Fluxify-Api-Key": "bVNONIPtXjY9U2S_1w7yTmzG02Yui5w4wfH1v5dFQletj3vFms9gdPJEy3USx8pO"
-            }
         })
     }
 
     sendMessage(text: string, chatId: string): Observable<ApiResponse> {
-        return this.post<ApiResponse>(`/${chatId}/message`, { text: text }, {
-            headers: {
-                "Fluxify-Api-Key": "bVNONIPtXjY9U2S_1w7yTmzG02Yui5w4wfH1v5dFQletj3vFms9gdPJEy3USx8pO"
-            }
-        })
+        return this.post<ApiResponse>(`/${chatId}/message`, { text: text })
     }
 }

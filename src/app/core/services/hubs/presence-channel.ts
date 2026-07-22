@@ -1,7 +1,8 @@
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { SignalrChannel } from "../common/signalr-service";
 import { environment } from "../../../../environments/environment.development";
 import { Observable } from "rxjs";
+import { UserContext } from "../common/user-context";
 
 
 @Injectable({
@@ -12,9 +13,9 @@ export class PresenceSChannel extends SignalrChannel {
     public userStates = signal<UserState[]>([])
 
     constructor() {
-        super(`${environment.hubApiUrl}/presence?Fluxify-Api-Key=` + 'bVNONIPtXjY9U2S_1w7yTmzG02Yui5w4wfH1v5dFQletj3vFms9gdPJEy3USx8pO')
+        const apiKey = inject(UserContext).state$().ApiKey;
 
-        this.startConnection();
+        super(`${environment.hubApiUrl}/presence?Fluxify-Api-Key=${apiKey}`);
     }
 
     protected override registerEvents(): void {

@@ -7,7 +7,7 @@
         <span class="status-badge online"></span>
       </div>
       <div class="active-details">
-        <h3>Ahmet Yılmaz</h3>
+        <h3>{{ selectedRoom()?.title }}</h3>
         <p>Software Developer - Client Stream</p>
       </div>
     </div>
@@ -17,25 +17,39 @@
     </div>
   </header>
 
+  <!-- Message History & Loading -->
   <div class="message-history">
-    <app-spinner [loading]="isLoading()">
+    @if(isLoading()){
+      <app-spinner></app-spinner>
+    }
+    @else {
       @for (msg of chatMessages(); track $index) {
-        <div class="message-row">
+        <div class="message-row" [class.incoming]="msg.userId !== usercontext.state$().NameIdentifier"
+          [class.outgoing]="msg.userId === usercontext.state$().NameIdentifier">
+
           <div class="message-box">
             <p class="message-text">{{ msg.text }}</p>
             <span class="message-time">{{ msg.date | date:'shortTime' }}</span>
           </div>
         </div>
       }
-    </app-spinner>
+    }
   </div>
 
-
+  <!-- Footer -->
   <footer class="chat-footer">
     <div class="input-container">
-      <button class="attach-btn"><i class="fa-solid fa-paperclip"></i></button>
-      <input type="text" placeholder="Type a message..." />
-      <button class="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+      <button class="attach-btn" type="button"><i class="fa-solid fa-paperclip"></i></button>
+      <input
+        #messageBox
+          [ngModel]="messageText()"
+          (ngModelChange)="messageText.set($event)"
+          (keydown)="onKeyDown($event)"
+       type="text" placeholder="Type a message..." />
+      <button
+        (click)="sendMessage()"
+        [disabled]="!messageText().trim()"
+       class="send-btn" type="button"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
   </footer>
 </section>

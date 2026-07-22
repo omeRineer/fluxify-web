@@ -1,18 +1,19 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { from, Observable } from 'rxjs';
+import { ToastService } from './toast-service';
 
 
 export type HubConnectionStatus = 'Connected' | 'Connecting' | 'Disconnected';
 
 export abstract class SignalrChannel {
   protected hubConnection!: signalR.HubConnection;
+  toastService = inject(ToastService)
 
   constructor(protected hubUrl: string) {
     this.createConnection();
   }
 
-  
 
   private createConnection() {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -24,29 +25,28 @@ export abstract class SignalrChannel {
       .build();
   }
 
-  protected startConnection() {
-    if (this.hubConnection.state === 'Connected') return
+  public connect() {
+    if (this.hubConnection.state === signalR.HubConnectionState.Connected) return
 
     this.registerEvents();
 
     this.hubConnection.start()
       .then(() => {
         console.log(`[SignalR - ${this.hubUrl}] Bağlantı başarıyla kuruldu.`);
-        this.onHubConnected(); // Alt sınıflara bağlantı kurulduğu müjdesini ver
+        this.onHubConnected(); 
       })
       .catch((err) => {
-        console.error(`[SignalR - ${this.hubUrl}] Bağlantı hatası:`, err);
+        this.toastService.error(`[SignalR - ${this.hubUrl}] Bağlantı hatası`)
       });
   }
-
-  protected invokeHubMethod(methodName: string, ...args: any[]): Observable<void> {
-    return from(this.hubConnection.invoke(methodName, ...args));
-  }
-
   public async disconnect() {
     if (this.hubConnection) {
       await this.hubConnection.stop();
     }
+  }
+
+  protected invokeHubMethod(methodName: string, ...args: any[]): Observable<void> {
+    return from(this.hubConnection.invoke(methodName, ...args));
   }
 
   protected abstract registerEvents():void;

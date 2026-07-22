@@ -1,16 +1,21 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { ChatChannel } from '../../../../core/services/hubs/chat-channel';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { ChatService } from '../../../../core/services/rest/chat-service';
 import { SpinnerComponent } from "../../../../shared/components/spinner";
 import { CoreComponent } from '../../../../core/components/core-component';
+import { UserContext } from '../../../../core/services/common/user-context';
+import { Stores } from '../../../../core/services/common/stores';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-chat-history',
   standalone: true,
   imports: [
     DatePipe,
-    SpinnerComponent
+    SpinnerComponent,
+    CommonModule, 
+    FormsModule
   ],
   templateUrl: './chat-history.html',
   styleUrl: './chat-history.css',
@@ -18,8 +23,12 @@ import { CoreComponent } from '../../../../core/components/core-component';
 export class ChatHistory extends CoreComponent {
   protected chatHub = inject(ChatChannel);
   protected chatService = inject(ChatService)
+  protected usercontext = inject(UserContext);
 
-  roomId = input<string>()
+  messageText = signal<string>('');
+
+  roomId = input<string>("")
+  selectedRoom = inject(Stores).selectedRoom;
   messages = this.chatHub.messages;
   chatMessages = computed(()=>{
     const activeRoomId = this.roomId();
@@ -42,6 +51,7 @@ export class ChatHistory extends CoreComponent {
   }
 
   getHistory(id: string) {
+    this.isLoading.set(true)
     this.chatService.getHistory(id).subscribe(res => {
       const messagesData = res.data.items.map(m => ({
         chatId: m.chatId,
@@ -50,6 +60,21 @@ export class ChatHistory extends CoreComponent {
         date: m.date
       }))
       this.messages.set(messagesData)
+      this.isLoading.set(false)
     })
+  }
+
+  sendMessage(){
+    this.chatService.sendMessage(this.messageText(), this.roomId()).subscribe(res=> {
+      console.log(res)
+      this.messageText.set('')
+    })
+  }
+
+  onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.sendMessage();
+    }
   }
 }

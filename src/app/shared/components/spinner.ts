@@ -6,8 +6,7 @@ import { Component, input } from "@angular/core";
   selector: 'app-spinner',
   standalone: true,
   template: `
-    @if (loading()) {
-      <div class="spinner-fixed-container">
+    <div class="spinner-fixed-container">
         <div class="spinner-container">
           <div class="loading-ring"></div>
           @if (message()) {
@@ -15,9 +14,6 @@ import { Component, input } from "@angular/core";
           }
         </div>
       </div>
-    } @else {
-      <ng-content></ng-content>
-    }
   `,
   styles: [`
     .spinner-fixed-container {
@@ -59,7 +55,7 @@ import { Component, input } from "@angular/core";
   `]
 })
 export class SpinnerComponent {
-    
+
   loading = input<boolean>(false);
   message = input<string>('');
 }

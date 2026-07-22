@@ -10,35 +10,63 @@ export abstract class BaseHttpService {
 
     protected http = inject(HttpClient);
 
-    constructor(protected endpoint: string) { }
+    constructor(protected endpoint: string) {
+        
+    }
 
     protected get fullUrl(): string {
         return `${environment.webApiUrl}/${this.endpoint}`;
     }
 
     protected get<T>(urlSuffix = '', options?: HttpOptions): Observable<T> {
-        return this.http.get<T>(`${this.fullUrl}${urlSuffix}`, options).pipe(
+        return this.http.get<T>(`${this.fullUrl}${urlSuffix}`, {
+            params: options?.params,
+            headers:{
+                ...options?.headers,
+                "Content-Type":"application/json"
+            }
+        }).pipe(
             catchError(this.handleError)
         );
     }
 
     protected post<T>(urlSuffix = '', body: any, options?: HttpOptions): Observable<T> {
-        return this.http.post<T>(`${this.fullUrl}${urlSuffix}`, body, options).pipe(
+        return this.http.post<T>(`${this.fullUrl}${urlSuffix}`, body, {
+            params: options?.params,
+            headers:{
+                ...options?.headers,
+                "Content-Type":"application/json"
+            }
+        }).pipe(
             catchError(this.handleError)
         );
     }
 
     protected put<T>(urlSuffix = '', body: any, options?: HttpOptions): Observable<T> {
-        return this.http.put<T>(`${this.fullUrl}${urlSuffix}`, body, options).pipe(
+        return this.http.put<T>(`${this.fullUrl}${urlSuffix}`, body, {
+            params: options?.params,
+            headers:{
+                ...options?.headers,
+                "Content-Type":"application/json"
+            }
+        }).pipe(
             catchError(this.handleError)
         );
     }
 
     protected delete<T>(urlSuffix = '', options?: HttpOptions): Observable<T> {
-        return this.http.delete<T>(`${this.fullUrl}${urlSuffix}`, options).pipe(
+        return this.http.delete<T>(`${this.fullUrl}${urlSuffix}`, {
+            params: options?.params,
+            headers:{
+                ...options?.headers,
+                "Content-Type":"application/json"
+            }
+        }).pipe(
             catchError(this.handleError)
         );
     }
+
+
 
     private handleError(error: HttpErrorResponse) {
         let errorMessage = 'Bilinmeyen bir hata oluştu.';

@@ -3,6 +3,7 @@ import { SpinnerComponent } from '../../shared/components/spinner';
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   imports: [
     SpinnerComponent
   ],
