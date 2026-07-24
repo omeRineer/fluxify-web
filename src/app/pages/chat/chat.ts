@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ChatRooms } from './components/chat-rooms/chat-rooms';
 import { RouterModule } from '@angular/router';
-import { ChatChannel } from '../../core/services/hubs/chat-channel';
+import { ChatHubService } from '../../core/services/hubs/chat-hub.service';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -15,14 +15,14 @@ import { DatePipe } from '@angular/common';
   styleUrl: './chat.css',
 })
 export class Chat implements OnInit, OnDestroy {
-  chatHub = inject(ChatChannel)
+  chatHubService = inject(ChatHubService)
 
   ngOnDestroy(): void {
-    this.chatHub.disconnect()
+    this.chatHubService.disconnect()
   }
 
   ngOnInit(): void {
-    this.chatHub.connect()
+    this.chatHubService.connect()
   }
   
 }

@@ -16,40 +16,54 @@
       <button class="action-btn" title="More Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
     </div>
   </header>
-
-  <!-- Message History & Loading -->
+  @if(isLoading()){
+  <app-spinner></app-spinner>
+  }
+  @else {
   <div class="message-history">
-    @if(isLoading()){
-      <app-spinner></app-spinner>
-    }
-    @else {
-      @for (msg of chatMessages(); track $index) {
-        <div class="message-row" [class.incoming]="msg.userId !== usercontext.state$().NameIdentifier"
-          [class.outgoing]="msg.userId === usercontext.state$().NameIdentifier">
 
-          <div class="message-box">
-            <p class="message-text">{{ msg.text }}</p>
-            <span class="message-time">{{ msg.date | date:'shortTime' }}</span>
-          </div>
-        </div>
-      }
+    @for (msg of chatMessages(); track $index) {
+    <div class="message-row" [class.incoming]="msg.userId !== usercontext.state$().NameIdentifier"
+      [class.outgoing]="msg.userId === usercontext.state$().NameIdentifier">
+
+      <div class="message-box">
+        @if (msg.userId !== usercontext.state$().NameIdentifier) {
+        <span class="message-sender">{{ msg.name }}</span>
+        }
+        <p class="message-text">{{ msg.text }}</p>
+        <span class="message-time">{{ msg.date | date:'shortTime' }}</span>
+      </div>
+    </div>
     }
+
+
+    <div class="chat-typing-wrapper">
+      <!-- Karşı Taraf Avatarı (Opsiyonel) -->
+      <!-- <div class="typing-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div> -->
+
+      <!-- Balon ve Noktalar -->
+      <div class="typing-bubble">
+        <div class="typing-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Footer -->
   <footer class="chat-footer">
     <div class="input-container">
       <button class="attach-btn" type="button"><i class="fa-solid fa-paperclip"></i></button>
-      <input
-        #messageBox
-          [ngModel]="messageText()"
-          (ngModelChange)="messageText.set($event)"
-          (keydown)="onKeyDown($event)"
-       type="text" placeholder="Type a message..." />
-      <button
-        (click)="sendMessage()"
-        [disabled]="!messageText().trim()"
-       class="send-btn" type="button"><i class="fa-solid fa-paper-plane"></i></button>
+      <input #messageBox [ngModel]="messageText()" (ngModelChange)="messageText.set($event)"
+        (keydown)="onKeyDown($event)" (input)="onInputChange($event)" type="text" placeholder="Type a message..." />
+      <button (click)="sendMessage()" [disabled]="!messageText().trim()" class="send-btn" type="button"><i
+          class="fa-solid fa-paper-plane"></i></button>
     </div>
   </footer>
+  }
 </section>

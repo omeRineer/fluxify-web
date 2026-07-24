@@ -1,12 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { from, Observable } from 'rxjs';
-import { ToastService } from './toast-service';
+import { ToastService } from './toast.service';
 
 
-export type HubConnectionStatus = 'Connected' | 'Connecting' | 'Disconnected';
-
-export abstract class SignalrChannel {
+export abstract class SignalrHubService {
   protected hubConnection!: signalR.HubConnection;
   toastService = inject(ToastService)
 
@@ -23,17 +21,17 @@ export abstract class SignalrChannel {
       })
       .withAutomaticReconnect([0, 2000, 5000, 10000]) // Bağlantı koptuğunda bu aralıklarla tekrar dene
       .build();
+
+    this.registerEvents();
   }
 
   public connect() {
     if (this.hubConnection.state === signalR.HubConnectionState.Connected) return
 
-    this.registerEvents();
-
     this.hubConnection.start()
       .then(() => {
         console.log(`[SignalR - ${this.hubUrl}] Bağlantı başarıyla kuruldu.`);
-        this.onHubConnected(); 
+        this.onHubConnected();
       })
       .catch((err) => {
         this.toastService.error(`[SignalR - ${this.hubUrl}] Bağlantı hatası`)
@@ -49,7 +47,7 @@ export abstract class SignalrChannel {
     return from(this.hubConnection.invoke(methodName, ...args));
   }
 
-  protected abstract registerEvents():void;
+  protected abstract registerEvents(): void;
   protected onHubConnected(): void { }
   protected onHubReconnected(): void { }
 

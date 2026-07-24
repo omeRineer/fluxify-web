@@ -1,12 +1,12 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { UserContext } from '../services/common/user-context';
+import { UserContextService } from '../services/common/userContext.service';
 import { StorageKeys } from '../constants/local-storage-keys';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const userContext = inject(UserContext)
+  const userContext = inject(UserContextService)
 
-  if(userContext.state$().isAuthenticated){
+  if(userContext.user$().isAuthenticated){
     const token = localStorage.getItem(StorageKeys.TOKEN_KEY)
     const clonedReq = req.clone({
       setHeaders: {

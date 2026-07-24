@@ -4,6 +4,10 @@
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
             <input type="text" placeholder="Search users or channels..." />
         </div>
+
+        <button type="button" class="new-chat-btn" (click)="createChat()" title="Yeni Sohbet / Grup">
+            <i class="fa-solid fa-plus"></i>
+        </button>
     </div>
 
 
@@ -21,7 +25,7 @@
                     <div class="user-details">
                         <div class="user-meta">
                             <span class="user-name">{{ room.title }}</span>
-                            <span class="chat-time">12:45 PM</span>
+                            <span class="chat-time">{{ room.date | smartDate }}</span>
                         </div>
                         <p class="last-message">...</p>
                     </div>

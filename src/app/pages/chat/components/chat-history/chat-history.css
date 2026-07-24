@@ -76,6 +76,14 @@
   width: 100%;
 }
 
+.message-sender {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #818cf8; /* Tema renginize uygun indigo tonu */
+  margin-bottom: 2px;
+}
+
 
 /* Gelen mesaj */
 .message-row.incoming {
@@ -222,4 +230,87 @@
     display: flex;
     flex: 1;
     min-height: 0;
+}
+
+
+
+
+
+/* Ana Kapsayıcı */
+.chat-typing-wrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 0 12px;
+}
+
+/* Küçük Kullanıcı Avatarı */
+.typing-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* Mesaj Balonu */
+.typing-bubble {
+  background-color: #1e293b; /* Chat gelen mesaj rengi */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 14px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px; /* Gelen mesaj hissi veren köşe */
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Noktaların Hizalandığı Konteyner */
+.typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 12px;
+}
+
+/* Tekil Nokta Stili */
+.typing-dots .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #818cf8; /* Fluxify accent indigo rengi */
+  display: inline-block;
+  animation: typingWave 1.4s infinite ease-in-out both;
+}
+
+/* Animasyon Gecikmeleri (Sırayla zıplamaları için) */
+.typing-dots .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dots .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.typing-dots .dot:nth-child(3) {
+  animation-delay: 0s;
+}
+
+/* Yukarı-Aşağı Dalga Animasyonu */
+@keyframes typingWave {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
 }

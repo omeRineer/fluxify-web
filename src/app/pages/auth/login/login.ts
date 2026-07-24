@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { CoreComponent } from '../../../core/components/core-component';
-import { AuthService } from '../../../core/services/rest/auth-service';
+import { CoreComponent } from '../../../core/components/core.component';
+import { AuthService } from '../../../core/services/rest/auth.service';
 import { Router } from '@angular/router';
-import { finalize, tap } from 'rxjs';
+import { catchError, finalize, tap, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../core/services/common/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class Login extends CoreComponent {
   private authService = inject(AuthService);
+  private toastService = inject(ToastService);
   private router = inject(Router);
 
   apiKey = signal<string>('');
@@ -32,12 +34,19 @@ export class Login extends CoreComponent {
     this.errorMessage.set(null);
 
     this.authService.loginWithApiKey(key).pipe(
+      catchError((err)=>{
+        this.toastService.error(err.message)
+
+        return throwError(()=> new Error())
+      }),
       finalize(() => {
         this.isLoading.set(false)
       })
     ).subscribe(res => {
       if (res.success)
         this.router.navigate(['/']);
+      else
+        this.toastService.error(res.message)
     })
   }
 }

@@ -5,8 +5,8 @@ import { ChatHistory } from './pages/chat/components/chat-history/chat-history';
 import { AuthLayout } from './shared/layouts/auth-layout/auth-layout';
 import { Login } from './pages/auth/login/login';
 import { MainLayout } from './shared/layouts/main-layout/main-layout';
-import { authGuard } from './core/guards/auth-guard';
-import { guestGuard } from './core/guards/guest-guard';
+import { authGuard } from './core/guards/auth.guard';
+import { guestGuard } from './core/guards/guest.guard';
 
 export const routes: Routes = [
     {

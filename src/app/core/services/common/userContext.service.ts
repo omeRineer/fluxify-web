@@ -1,29 +1,19 @@
 import { inject, Injectable, signal } from "@angular/core";
-import { UserContextInfo } from "../../models/common/user-context-info";
+import { UserContextInfo, INITIAL_USER_CONTEXT } from "../../models/common/user-context.models";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { StorageKeys } from "../../constants/local-storage-keys";
 
-const INITIAL_USER_CONTEXT: UserContextInfo = {
-    NameIdentifier: null,
-    Key: null,
-    ApiKey: null,
-    Name: null,
-    Device: null,
-    Platform: null,
-    NameSpaceId: null,
-    NameSpace: null,
-    isAuthenticated: false
-};
+
 
 @Injectable({
     providedIn: 'root'
 })
-export class UserContext {
+export class UserContextService {
     jwtHelper = inject(JwtHelperService)
 
-    private state = signal<UserContextInfo>(INITIAL_USER_CONTEXT)
+    private user = signal<UserContextInfo>(INITIAL_USER_CONTEXT)
 
-    public state$ = this.state.asReadonly();
+    public user$ = this.user.asReadonly();
 
     constructor() {
         this.initializeFromStorage();
@@ -31,14 +21,14 @@ export class UserContext {
 
 
     set(context: UserContextInfo): void {
-        this.state.set({
+        this.user.set({
             ...context,
             isAuthenticated: true
         });
     }
 
     clear(): void {
-        this.state.set(INITIAL_USER_CONTEXT);
+        this.user.set(INITIAL_USER_CONTEXT);
     }
 
     private initializeFromStorage(): void {

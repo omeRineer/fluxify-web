@@ -3,21 +3,95 @@
   <div class="header-left">
   </div>
 
-  <!-- Sağ Bölüm: Sistem Durumu ve Profil -->
   <div class="header-right">
-    <!-- SignalR / Canlı Durum Göstergesi -->
-    
+
+    <div class="fluxify-dropdown" tabindex="0">
+      <button type="button" class="notification-btn" title="Bildirimler">
+        <i class="fa-regular fa-bell"></i>
+        <span class="notification-badge">3</span>
+      </button>
+
+      <div class="fluxify-dropdown-menu notification-menu">
+        <div class="notification-header">
+          <div class="flex items-center justify-between w-full">
+            <span class="font-semibold text-xs text-slate-200">Bildirimler</span>
+          </div>
+        </div>
+
+        <div class="fluxify-dropdown-divider"></div>
+
+        <div class="notification-list custom-scrollbar">
+
+          @for (notification of presenceHubService.notifications(); track $index) {
+          <div class="notification-item">
+            <div class="notification-icon bg-slate-800 text-slate-400 border border-slate-700">
+              <i class="fa-solid fa-server text-xs"></i>
+            </div>
+            <div class="notification-content">
+              <p class="notification-text">{{ notification.title }}</p>
+              <span class="notification-time">{{ notification.date | smartDate}}</span>
+            </div>
+          </div>
+          }
+
+        </div>
+
+        <div class="fluxify-dropdown-divider"></div>
+
+        <!-- Alt Alan (Tümünü Gör) -->
+        <div class="notification-footer">
+          <button type="button" class="view-all-btn">
+            Tüm Bildirimleri Gör
+          </button>
+        </div>
+      </div>
+    </div>
+
 
     <div class="divider"></div>
 
-    <!-- Kullanıcı Profil Alanı -->
-    <div class="user-profile">
-      <div class="avatar">
-        <i class="fa-solid fa-user-gear"></i>
+    <div class="fluxify-dropdown" tabindex="0">
+      <!-- Tetikleyici Alan -->
+      <div class="user-profile cursor-pointer">
+        <div class="avatar">
+          <i class="fa-solid fa-user-gear"></i>
+        </div>
+        <div class="profile-info">
+          <span class="username">{{ userContext.state$().Name }}</span>
+          <span class="role">User</span>
+        </div>
+        <i class="fa-solid fa-chevron-down fluxify-dropdown-arrow ml-1"></i>
       </div>
-      <div class="profile-info">
-        <span class="username">Fluxify Root</span>
-        <span class="role">System Developer</span>
+
+      <!-- Global Dropdown Menü -->
+      <div class="fluxify-dropdown-menu">
+        <div class="fluxify-dropdown-header">
+          <p class="fluxify-dropdown-header-text">{{ userContext.state$().Device }}</p>
+        </div>
+
+        <div class="fluxify-dropdown-divider"></div>
+
+        <ul class="fluxify-dropdown-list">
+          <li>
+            <button type="button" class="fluxify-dropdown-item">
+              <i class="fa-solid fa-user"></i>
+              <span>Profil</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" class="fluxify-dropdown-item">
+              <i class="fa-solid fa-sliders"></i>
+              <span>Ayarlar</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="fluxify-dropdown-divider"></div>
+
+        <button (click)="onLogout()" type="button" class="fluxify-dropdown-item danger">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Çıkış Yap</span>
+        </button>
       </div>
     </div>
   </div>

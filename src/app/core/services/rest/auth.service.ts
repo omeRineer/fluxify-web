@@ -1,10 +1,10 @@
 import { inject, Injectable } from "@angular/core";
-import { BaseHttpService } from "../common/http-service";
+import { BaseHttpService } from "../common/http.service";
 import { Observable, tap } from "rxjs";
-import { ApiDataResponse } from "../../models/common/api-response";
-import { AccessToken } from "../../models/common/access-token";
-import { UserContextInfo } from "../../models/common/user-context-info";
-import { UserContext } from "../common/user-context";
+import { ApiDataResponse } from "../../models/common/api.models";
+import { AccessToken } from "../../models/common/auth.models";
+import { UserContextInfo } from "../../models/common/user-context.models";
+import { UserContextService } from "../common/userContext.service";
 import { JwtHelperService } from "@auth0/angular-jwt";
 import { StorageKeys } from "../../constants/local-storage-keys";
 
@@ -13,11 +13,11 @@ import { StorageKeys } from "../../constants/local-storage-keys";
     providedIn: 'root'
 })
 export class AuthService extends BaseHttpService {
-    userContext = inject(UserContext)
+    userContext = inject(UserContextService)
     jwtHelper = inject(JwtHelperService)
 
     constructor() {
-        super("Auth");
+        super("auth");
     }
 
     loginWithApiKey(apiKey: string): Observable<ApiDataResponse<AccessToken>> {

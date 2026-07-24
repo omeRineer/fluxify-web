@@ -2,7 +2,10 @@
     <!-- Logo Bölümü -->
     <div class="logo-area">
         <div class="logo-icon">
-            <i class="fa-solid fa-bolt"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
         </div>
         <div class="logo-text">
             <h2>Fluxify</h2>
@@ -12,17 +15,12 @@
 
     <!-- Navigasyon Linkleri -->
     <nav class="nav-menu">
-        <a routerLink="/" 
-           routerLinkActive="active"
-           [routerLinkActiveOptions]="{ exact: true }"
-           class="nav-item">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
             <i class="fa-solid fa-chart-pie nav-icon"></i>
             <span>Dashboard</span>
         </a>
-        <a routerLink="/chat" 
-           routerLinkActive="active"
-           class="nav-item">
-            <i class="fa-regular fa-comment"></i>
+        <a routerLink="/chat" routerLinkActive="active" class="nav-item">
+            <i class="fa-solid fa-comment nav-icon"></i>
             <span>Sohbet</span>
         </a>
     </nav>

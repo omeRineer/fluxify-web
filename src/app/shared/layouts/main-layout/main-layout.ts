@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { SidebarComponent } from './components/sidebar-component/sidebar-component';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from './components/header-component/header-component';
-import { PresenceSChannel } from '../../../core/services/hubs/presence-channel';
+import { PresenceHubService } from '../../../core/services/hubs/presence-hub.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -16,11 +16,11 @@ import { PresenceSChannel } from '../../../core/services/hubs/presence-channel';
   styleUrl: './main-layout.css',
 })
 export class MainLayout implements OnInit {
-  presenceChannel = inject(PresenceSChannel)
+  presenceHubService = inject(PresenceHubService)
 
   isSidebarOpen = true;
 
   ngOnInit(): void {
-    this.presenceChannel.connect()
+    this.presenceHubService.connect()
   }
 }

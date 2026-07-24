@@ -1,21 +1,17 @@
 import { Injectable } from "@angular/core";
-import { BaseHttpService } from "../common/http-service";
+import { BaseHttpService } from "../common/http.service";
 import { Observable } from "rxjs";
-import { ApiDataResponse, ApiResponse } from "../../models/common/api-response";
-import { DataList } from "../../models/common/data-list";
-import { MessageDto } from "../../models/entity/message-dto";
-import { ChatDto } from "../../models/entity/chat-dto";
+import { ApiDataResponse, ApiResponse } from "../../models/common/api.models";
+import { DataList } from "../../models/common/data.models";
+import { MessageDto } from "../../models/entity/message.models";
+import { ChatDto } from "../../models/entity/chat.models";
 
 @Injectable({
     providedIn: "root"
 })
 export class ChatService extends BaseHttpService {
     constructor() {
-        super("Chat")
-    }
-
-    getList(): Observable<ApiDataResponse<DataList<ChatDto.List>>> {
-        return this.get<ApiDataResponse<DataList<ChatDto.List>>>(``)
+        super("chat")
     }
 
     getHistory(chatId: string): Observable<ApiDataResponse<DataList<MessageDto.List>>> {

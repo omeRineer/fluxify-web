@@ -1,0 +1,126 @@
+/* ==========================================
+   FLUXIFY GLOBAL DROPDOWN STYLES
+   ========================================== */
+
+/* 1. Konteyner (Her açılır menünün dış sarmalayıcısı) */
+.fluxify-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* 2. Açılır Menü Kutusu (Dropdown Container) */
+.fluxify-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0; /* Sağ hizalama için varsayılan. Sola hizalamak için .left ekleyebilirsin */
+  min-width: 180px;
+  background-color: #111625;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  padding: 6px;
+  z-index: 100;
+  
+  /* Gizli/Kapalı Durum */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.15s ease-in-out;
+}
+
+/* Sola hizalı menü opsiyonu */
+.fluxify-dropdown-menu.left {
+  right: auto;
+  left: 0;
+}
+
+/* 3. Açık (Active) Durum */
+.fluxify-dropdown.active .fluxify-dropdown-menu,
+.fluxify-dropdown:focus-within .fluxify-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* 4. Dropdown Ok İkonu (Varsa otomatik dönmesi için) */
+.fluxify-dropdown-arrow {
+  font-size: 11px;
+  color: #64748b;
+  transition: transform 0.2s ease;
+}
+
+.fluxify-dropdown.active .fluxify-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* 5. Menü Başlığı / Bilgi Alanı */
+.fluxify-dropdown-header {
+  padding: 8px 12px;
+}
+
+.fluxify-dropdown-header-text {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 6. Ayrıştırıcı Çizgi */
+.fluxify-dropdown-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.06);
+  margin: 4px 0;
+}
+
+/* 7. Menü İçi Liste & Elemanları */
+.fluxify-dropdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fluxify-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #cbd5e1;
+  border-radius: 8px;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.fluxify-dropdown-item i {
+  font-size: 14px;
+  color: #818cf8; /* Tema indigo aksanı */
+  width: 16px;
+  text-align: center;
+}
+
+.fluxify-dropdown-item:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: #f8fafc;
+}
+
+/* Danger / Çıkış / Silme Butonu Variyantı */
+.fluxify-dropdown-item.danger {
+  color: #f87171;
+}
+
+.fluxify-dropdown-item.danger i {
+  color: #f87171;
+}
+
+.fluxify-dropdown-item.danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #fca5a5;
+}

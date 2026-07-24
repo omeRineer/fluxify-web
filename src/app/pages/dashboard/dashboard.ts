@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { SpinnerComponent } from '../../shared/components/spinner';
+import { SpinnerComponent } from '../../shared/components/spinner.component';
 
 @Component({
   selector: 'app-dashboard',

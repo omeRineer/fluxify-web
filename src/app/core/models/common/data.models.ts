@@ -1,4 +1,4 @@
-export class DataList<TData>{
+export interface DataList<TData>{
     count:number;
     items:TData[];
 }

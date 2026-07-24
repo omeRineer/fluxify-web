@@ -1,20 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { ToastOptions, ToastRef } from '../../models/common/toast.models';
 
-export type ToastLevel = 'success' | 'info' | 'warning' | 'error' | 'loading' | 'chat';
 
-export interface ToastOptions {
-  title?: string;
-  message: string;
-  level?: ToastLevel;
-  thumbnail?: string;
-  url?: string;
-  duration?: number;
-}
-
-export interface ToastRef {
-  close: () => void;
-}
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +10,8 @@ export interface ToastRef {
 export class ToastService {
   private document = inject(DOCUMENT);
   private container: HTMLElement | null = null;
+  private notificationAudio = new Audio("/assets/sounds/notification-sound.mp3");
+
 
   // SVG İkon Kütüphanesi
   private readonly icons: Record<string, string> = {
@@ -32,8 +22,10 @@ export class ToastService {
     chat: `<svg class="toast-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>`
   };
 
+
   constructor() {
     this.initContainer();
+    this.notificationAudio.volume = 0.5;
   }
 
   private initContainer(): void {
@@ -47,6 +39,9 @@ export class ToastService {
 
   public fire(options: ToastOptions): ToastRef {
     if (!this.container) this.initContainer();
+
+    if (options.playSound)
+      this.sound()
 
     const {
       title = '',
@@ -130,7 +125,6 @@ export class ToastService {
     };
   }
 
-  // Yardımcı Metotlar (Shortcuts)
   public success(message: string, title?: string, options?: Partial<ToastOptions>): ToastRef {
     return this.fire({ ...options, message, title, level: 'success' });
   }
@@ -158,5 +152,21 @@ export class ToastService {
     toast.addEventListener('transitionend', () => {
       toast.remove();
     });
+  }
+
+  sound(): void {
+    try {
+      this.notificationAudio.currentTime = 0;
+
+      const playPromise = this.notificationAudio.play();
+
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn('Bildirim sesi çalınamadı (Autoplay kısıtlaması):', error);
+        });
+      }
+    } catch (err) {
+      console.error('Ses dosyası oynatılırken hata oluştu:', err);
+    }
   }
 }

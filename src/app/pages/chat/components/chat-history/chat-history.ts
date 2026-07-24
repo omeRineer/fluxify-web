@@ -1,10 +1,10 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
-import { ChatChannel } from '../../../../core/services/hubs/chat-channel';
+import { ChatHubService } from '../../../../core/services/hubs/chat-hub.service';
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChatService } from '../../../../core/services/rest/chat-service';
-import { SpinnerComponent } from "../../../../shared/components/spinner";
-import { CoreComponent } from '../../../../core/components/core-component';
-import { UserContext } from '../../../../core/services/common/user-context';
+import { ChatService } from '../../../../core/services/rest/chat.service';
+import { SpinnerComponent } from "../../../../shared/components/spinner.component";
+import { CoreComponent } from '../../../../core/components/core.component';
+import { UserContextService } from '../../../../core/services/common/userContext.service';
 import { Stores } from '../../../../core/services/common/stores';
 import { FormsModule } from '@angular/forms';
 
@@ -14,29 +14,38 @@ import { FormsModule } from '@angular/forms';
   imports: [
     DatePipe,
     SpinnerComponent,
-    CommonModule, 
+    CommonModule,
     FormsModule
   ],
   templateUrl: './chat-history.html',
   styleUrl: './chat-history.css',
 })
 export class ChatHistory extends CoreComponent {
-  protected chatHub = inject(ChatChannel);
+  protected chatHubService = inject(ChatHubService);
   protected chatService = inject(ChatService)
-  protected usercontext = inject(UserContext);
+  protected usercontext = inject(UserContextService);
 
   messageText = signal<string>('');
+  private typingTimeout: any;
+  private isTyping = false;
 
   roomId = input<string>("")
   selectedRoom = inject(Stores).selectedRoom;
-  messages = this.chatHub.messages;
-  chatMessages = computed(()=>{
+  messages = this.chatHubService.messages;
+  chatMessages = computed(() => {
     const activeRoomId = this.roomId();
     if (!activeRoomId) return [];
 
-    return this.messages().filter(msg => 
+    return this.messages().filter(msg =>
       msg.chatId === activeRoomId
     );
+  })
+  chatTypings = computed(()=>{
+    const activeRoomId = this.roomId();
+
+    const existingIndex = this.chatHubService.onTypings().findIndex(f=> f.chatId === activeRoomId);
+
+    return this.chatHubService.onTypings()[existingIndex]
   })
 
   constructor() {
@@ -57,15 +66,16 @@ export class ChatHistory extends CoreComponent {
         chatId: m.chatId,
         userId: m.userId,
         text: m.text,
-        date: m.date
+        date: m.date,
+        name: m.name
       }))
       this.messages.set(messagesData)
       this.isLoading.set(false)
     })
   }
 
-  sendMessage(){
-    this.chatService.sendMessage(this.messageText(), this.roomId()).subscribe(res=> {
+  sendMessage() {
+    this.chatService.sendMessage(this.messageText(), this.roomId()).subscribe(res => {
       console.log(res)
       this.messageText.set('')
     })
@@ -76,5 +86,37 @@ export class ChatHistory extends CoreComponent {
       event.preventDefault();
       this.sendMessage();
     }
+  }
+
+  onInputChange(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value.trim();
+
+    // 1. İnput içinde değer var mı?
+    if (value.length > 0) {
+      if (!this.isTyping) {
+        this.isTyping = true;
+        this.sendTypingStatus(true);
+      }
+
+      // Her tuşa basıldığında önceki sayacı sıfırla (2 sn sonra durdu kabul edeceğiz)
+      clearTimeout(this.typingTimeout);
+      this.typingTimeout = setTimeout(() => {
+        this.isTyping = false;
+        this.sendTypingStatus(false);
+      }, 2000);
+
+    } else {
+      // 2. İnput boşaltıldıysa sayacı temizle ve anında false gönder
+      clearTimeout(this.typingTimeout);
+      if (this.isTyping) {
+        this.isTyping = false;
+        this.sendTypingStatus(false);
+      }
+    }
+  }
+
+  private sendTypingStatus(isTyping: boolean): void {
+    this.chatHubService.onTyping(this.roomId(), isTyping).subscribe()
   }
 }
