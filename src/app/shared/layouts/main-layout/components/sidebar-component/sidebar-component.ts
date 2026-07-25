@@ -7,33 +7,22 @@ import { NavItem } from '../../../../../core/models/ui/sidebar.models';
   standalone: true,
   imports: [
     RouterModule,
-    RouterLinkActive,
-  ],
+    RouterLinkActive
+],
   templateUrl: './sidebar-component.html',
   styleUrl: './sidebar-component.css',
 })
 export class SidebarComponent {
   menuItems: NavItem[] = [
     {
-      title: 'Panel',
-      icon: 'dashboard',
+      title: 'Dashboard',
+      icon: 'fa-solid fa-chart-pie',
       route: '/dashboard'
     },
     {
-      title: 'Yönetim',
-      icon: 'admin_panel_settings',
-      children: [
-        { title: 'Kullanıcılar', icon: 'people', route: '/admin/users' },
-        { title: 'Roller', icon: 'verified_user', route: '/admin/roles' }
-      ]
-    },
-    {
-      title: 'Ayarlar',
-      icon: 'settings',
-      children: [
-        { title: 'Genel Ayarlar', icon: 'tune', route: '/settings/general' },
-        { title: 'Güvenlik', icon: 'security', route: '/settings/security' }
-      ]
+      title: 'Sohbet',
+      icon: 'fa-solid fa-comment',
+      route: '/chat'
     }
   ];
 }

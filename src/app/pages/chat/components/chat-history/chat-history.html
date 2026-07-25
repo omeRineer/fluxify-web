@@ -23,11 +23,11 @@
   <div class="message-history">
 
     @for (msg of chatMessages(); track $index) {
-    <div class="message-row" [class.incoming]="msg.userId !== usercontext.state$().NameIdentifier"
-      [class.outgoing]="msg.userId === usercontext.state$().NameIdentifier">
+    <div class="message-row" [class.incoming]="msg.userId !== usercontext.user$().NameIdentifier"
+      [class.outgoing]="msg.userId === usercontext.user$().NameIdentifier">
 
       <div class="message-box">
-        @if (msg.userId !== usercontext.state$().NameIdentifier) {
+        @if (msg.userId !== usercontext.user$().NameIdentifier) {
         <span class="message-sender">{{ msg.name }}</span>
         }
         <p class="message-text">{{ msg.text }}</p>
@@ -37,13 +37,13 @@
     }
 
 
+    @if(typingCounter() > 0)
+    {
     <div class="chat-typing-wrapper">
-      <!-- Karşı Taraf Avatarı (Opsiyonel) -->
       <!-- <div class="typing-avatar">
         <i class="fa-solid fa-user"></i>
       </div> -->
 
-      <!-- Balon ve Noktalar -->
       <div class="typing-bubble">
         <div class="typing-dots">
           <span class="dot"></span>
@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-
+    }
   </div>
 
   <!-- Footer -->
@@ -61,6 +61,7 @@
       <button class="attach-btn" type="button"><i class="fa-solid fa-paperclip"></i></button>
       <input #messageBox [ngModel]="messageText()" (ngModelChange)="messageText.set($event)"
         (keydown)="onKeyDown($event)" (input)="onInputChange($event)" type="text" placeholder="Type a message..." />
+
       <button (click)="sendMessage()" [disabled]="!messageText().trim()" class="send-btn" type="button"><i
           class="fa-solid fa-paper-plane"></i></button>
     </div>

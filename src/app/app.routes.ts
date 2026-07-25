@@ -7,6 +7,7 @@ import { Login } from './pages/auth/login/login';
 import { MainLayout } from './shared/layouts/main-layout/main-layout';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { NotFoundComponent } from './shared/static/not-found.component';
 
 export const routes: Routes = [
     {
@@ -32,5 +33,9 @@ export const routes: Routes = [
         children: [
             { path: 'login', component: Login }
         ]
-    }
+    },
+
+
+    { path: '404', component: NotFoundComponent },
+    { path: '**', redirectTo: '404' }
 ];

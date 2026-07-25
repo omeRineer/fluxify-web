@@ -1,1 +1,1 @@
-export type HubConnectionStatus = 'Connected' | 'Connecting' | 'Disconnected';
+export type HubConnectionStatus = 'Connected' | 'Connecting' | 'Disconnected' | 'Error';

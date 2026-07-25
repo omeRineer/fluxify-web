@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
 import { ChatHubService } from '../../../../core/services/hubs/chat-hub.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ChatService } from '../../../../core/services/rest/chat.service';
@@ -20,16 +20,16 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './chat-history.html',
   styleUrl: './chat-history.css',
 })
-export class ChatHistory extends CoreComponent {
+export class ChatHistory extends CoreComponent implements OnDestroy, OnInit {
   protected chatHubService = inject(ChatHubService);
   protected chatService = inject(ChatService)
   protected usercontext = inject(UserContextService);
 
   messageText = signal<string>('');
-  private typingTimeout: any;
   private isTyping = false;
 
   roomId = input<string>("")
+  prevRoomId: string | null = null;
   selectedRoom = inject(Stores).selectedRoom;
   messages = this.chatHubService.messages;
   chatMessages = computed(() => {
@@ -40,23 +40,36 @@ export class ChatHistory extends CoreComponent {
       msg.chatId === activeRoomId
     );
   })
-  chatTypings = computed(()=>{
+  typingCounter = computed(() => {
     const activeRoomId = this.roomId();
 
-    const existingIndex = this.chatHubService.onTypings().findIndex(f=> f.chatId === activeRoomId);
+    const existingIndex = this.chatHubService.onTypings().findIndex(item => activeRoomId in item);
 
-    return this.chatHubService.onTypings()[existingIndex]
+    if (existingIndex === -1)
+      return 0;
+
+    return this.chatHubService.onTypings()[existingIndex][activeRoomId]
   })
 
   constructor() {
+
     super()
     effect(() => {
+      this.sendTypingStatus(this.prevRoomId ?? this.roomId(), false);
+      this.prevRoomId = this.roomId();
+      this.messageText.set('')
       const id = this.roomId();
-      console.log(id)
       if (id) {
         this.getHistory(id);
       }
     })
+  }
+  ngOnInit(): void {
+    this.prevRoomId = this.roomId();
+  }
+
+  ngOnDestroy(): void {
+    this.sendTypingStatus(this.roomId(), false);
   }
 
   getHistory(id: string) {
@@ -76,8 +89,8 @@ export class ChatHistory extends CoreComponent {
 
   sendMessage() {
     this.chatService.sendMessage(this.messageText(), this.roomId()).subscribe(res => {
-      console.log(res)
       this.messageText.set('')
+      this.sendTypingStatus(this.roomId(), false)
     })
   }
 
@@ -96,27 +109,18 @@ export class ChatHistory extends CoreComponent {
     if (value.length > 0) {
       if (!this.isTyping) {
         this.isTyping = true;
-        this.sendTypingStatus(true);
+        this.sendTypingStatus(this.roomId(), true);
       }
 
-      // Her tuşa basıldığında önceki sayacı sıfırla (2 sn sonra durdu kabul edeceğiz)
-      clearTimeout(this.typingTimeout);
-      this.typingTimeout = setTimeout(() => {
-        this.isTyping = false;
-        this.sendTypingStatus(false);
-      }, 2000);
-
     } else {
-      // 2. İnput boşaltıldıysa sayacı temizle ve anında false gönder
-      clearTimeout(this.typingTimeout);
       if (this.isTyping) {
         this.isTyping = false;
-        this.sendTypingStatus(false);
+        this.sendTypingStatus(this.roomId(), false);
       }
     }
   }
 
-  private sendTypingStatus(isTyping: boolean): void {
-    this.chatHubService.onTyping(this.roomId(), isTyping).subscribe()
+  private sendTypingStatus(roomId: string, isTyping: boolean): void {
+    this.chatHubService.onTyping(roomId, isTyping).subscribe()
   }
 }

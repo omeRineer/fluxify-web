@@ -81,6 +81,73 @@
   justify-content: center;
 }
 
+/* Alt Menü Kapsayıcısı */
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Dropdown Buton Düzenlemesi */
+.nav-dropdown-toggle {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.nav-title {
+  flex: 1; /* Ok simgesini en sağa itmek için */
+}
+
+/* Sağdaki Ok Simgesi */
+.nav-arrow {
+  font-size: 12px;
+  transition: transform var(--transition-fast);
+}
+
+/* Grup aktif/açık olduğunda oku döndürmek için (JS/Angular ile 'open' class'ı ekleyebilirsiniz) */
+.nav-group.open .nav-arrow {
+  transform: rotate(180deg);
+}
+
+/* Alt Menü Listesi */
+.nav-submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 36px; /* İkon hizasıyla eşleşmesi için soldan girinti */
+  margin-top: 2px;
+  border-left: 2px solid var(--bg-surface-hover, #e5e7eb); /* Sol şık bir hiza çizgisi */
+  margin-left: 25px; /* Çizginin ikonun altından başlaması için */
+}
+
+/* Alt Menü Linkleri */
+.nav-sub-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 400;
+  transition: all var(--transition-fast);
+}
+
+.nav-sub-item:hover {
+  background-color: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.nav-sub-item.active {
+  color: var(--color-primary);
+  font-weight: 600;
+  background-color: rgba(59, 130, 246, 0.08);
+}
+
 .sidebar-footer {
   padding: 16px;
   border-top: 1px solid var(--border-color);

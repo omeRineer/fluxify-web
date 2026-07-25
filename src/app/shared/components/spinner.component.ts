@@ -16,6 +16,9 @@ import { Component, input } from "@angular/core";
       </div>
   `,
   styles: [`
+  :host {
+    display: contents;
+  }
     .spinner-fixed-container {
       display: flex;
       align-items: center;

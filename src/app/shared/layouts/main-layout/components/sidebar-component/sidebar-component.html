@@ -13,16 +13,32 @@
         </div>
     </div>
 
-    <!-- Navigasyon Linkleri -->
     <nav class="nav-menu">
-        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-item">
-            <i class="fa-solid fa-chart-pie nav-icon"></i>
-            <span>Dashboard</span>
+        @for (menuItem of menuItems; track $index) {
+        @if(!menuItem.children){
+        <a routerLink="{{menuItem.route}}" routerLinkActive="active" class="nav-item">
+            <i class="nav-icon" [class]="menuItem.icon"></i>
+            <span>{{menuItem.title}}</span>
         </a>
-        <a routerLink="/chat" routerLinkActive="active" class="nav-item">
-            <i class="fa-solid fa-comment nav-icon"></i>
-            <span>Sohbet</span>
-        </a>
+        }
+        @else {
+        <div class="nav-group">
+            <button type="button" class="nav-item nav-dropdown-toggle">
+                <i class="nav-icon" [class]="menuItem.icon"></i>
+                <span class="nav-title">{{menuItem.title}}</span>
+                <i class="fa-solid fa-chevron-down nav-arrow"></i>
+            </button>
+
+            <div class="nav-submenu">
+                @for (subMenuItem of menuItem.children; track $index) {
+                <a routerLink="{{subMenuItem.route}}" routerLinkActive="active" class="nav-sub-item">
+                    <span>{{subMenuItem.title}}</span>
+                </a>
+                }
+            </div>
+        </div>
+        }
+        }
     </nav>
 
     <!-- Alt Bilgi / Çevre Belirteci -->

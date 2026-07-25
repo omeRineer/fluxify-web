@@ -20,7 +20,7 @@ export class ChatHubService extends SignalrHubService {
     }
 
     override registerEvents(): void {
-        this.hubConnection.on("ReceiveMessage", (message: Message) => {
+        this.hubConnection.on("ReceiveMessage", (message: MessagePayload) => {
             this.messages.update(prev => [
                 ...prev,
                 {
@@ -29,34 +29,35 @@ export class ChatHubService extends SignalrHubService {
             ])
         });
 
-        this.hubConnection.on("OnTyping", (message: { chatId: string, isTyping: boolean }) => {
-            this.onTypings.update(prev => {
-                const existingIndex = prev.findIndex(f => f.chatId === message.chatId);
+        this.hubConnection.on("OnTyping", (message: { chatId: string; isTyping: boolean }) => {
+            this.onTypings.update((prev: TypingCounterPayload[]) => {
+                const existingIndex = prev.findIndex(item => message.chatId in item);
 
                 if (existingIndex === -1) {
                     if (message.isTyping) {
-                        return [...prev, { chatId: message.chatId, counter: 1 }];
+                        return [...prev, { [message.chatId]: 1 }];
                     }
-                    return prev; 
+                    return prev;
                 }
 
-                const currentItem = prev[existingIndex];
+                const currentCounter = prev[existingIndex][message.chatId];
                 const newCounter = message.isTyping
-                    ? currentItem.counter + 1
-                    : Math.max(0, currentItem.counter - 1); 
+                    ? currentCounter + 1
+                    : Math.max(0, currentCounter - 1);
+
+                if (newCounter === 0) {
+                    return prev.filter((_, idx) => idx !== existingIndex);
+                }
 
                 const updated = [...prev];
-                updated[existingIndex] = {
-                    ...currentItem,
-                    counter: newCounter
-                };
+                updated[existingIndex] = { [message.chatId]: newCounter };
 
                 return updated;
             });
         });
     }
 
-    onTyping(chatId:string, isTyping:boolean):Observable<void>{
+    onTyping(chatId: string, isTyping: boolean): Observable<void> {
         return this.invokeHubMethod("OnTyping", chatId, isTyping)
     }
 

@@ -7,6 +7,5 @@ export interface MessagePayload {
 }
 
 export class TypingCounterPayload{
-    chatId:string;
-    counter: number = 0;
+    [key:string]:number;
 }
