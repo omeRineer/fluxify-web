@@ -36,6 +36,7 @@ export class UserContextService {
         if (token) {
             const claims = this.jwtHelper.decodeToken<UserContextInfo>(token);
             if (claims && !this.jwtHelper.isTokenExpired(token)) {
+                claims.Token = token;
                 this.set(claims);
             } else {
                 this.clear();

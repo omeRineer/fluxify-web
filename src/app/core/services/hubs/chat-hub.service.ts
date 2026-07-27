@@ -13,9 +13,9 @@ export class ChatHubService extends SignalrHubService {
     public onTypings = signal<TypingCounterPayload[]>([])
 
     constructor() {
-        const apiKey = inject(UserContextService).user$().ApiKey;
+        const token = inject(UserContextService).user$().Token;
 
-        super(`${environment.hubApiUrl}/chat?Fluxify-Api-Key=${apiKey}`);
+        super(`${environment.hubApiUrl}/chat?access_token=${token}`);
 
     }
 
