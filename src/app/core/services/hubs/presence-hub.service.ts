@@ -18,7 +18,7 @@ export class PresenceHubService extends SignalrHubService {
     constructor() {
         const token = inject(UserContextService).user$().Token;
 
-        super(`${environment.hubApiUrl}/presence?Fluxify-Api-Key=${token}`);
+        super(`${environment.hubApiUrl}/presence?access_token=${token}&Flx-Device-Id=DVC_XYZ&Flx-Device-Platform=web&Flx-Device-Token=qewtwe`);
     }
 
     protected override registerEvents(): void {

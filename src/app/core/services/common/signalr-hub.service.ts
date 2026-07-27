@@ -42,6 +42,7 @@ export abstract class SignalrHubService {
         this.connectionStatus.set('Connected')
       })
       .catch((err) => {
+        console.log("Bağlantı hatası")
         this.connectionStatus.set('Error')
       });
   }

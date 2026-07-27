@@ -15,7 +15,7 @@ export class ChatHubService extends SignalrHubService {
     constructor() {
         const token = inject(UserContextService).user$().Token;
 
-        super(`${environment.hubApiUrl}/chat?access_token=${token}`);
+        super(`${environment.hubApiUrl}/chat?access_token=${token}&Flx-Device-Id=DVC_XYZ&Flx-Device-Platform=web`);
 
     }
 
