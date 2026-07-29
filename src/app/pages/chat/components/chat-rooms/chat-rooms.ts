@@ -29,7 +29,6 @@ import { ChatDto } from '../../../../core/models/entity/chat.models';
 export class ChatRooms extends CoreComponent implements OnInit {
 
   protected chatService = inject(ChatService)
-  protected meService = inject(MeService)
   protected router = inject(Router)
   private dialogService = inject(DialogService);
   private toastService = inject(ToastService)
@@ -48,7 +47,7 @@ export class ChatRooms extends CoreComponent implements OnInit {
 
   getRooms() {
     this.isLoading.set(true)
-    this.meService.getChatRooms().subscribe(res => {
+    this.chatService.getRooms().subscribe(res => {
       const rooms = res.data.items.map(m => ({
         id: m.id,
         title: m.title,

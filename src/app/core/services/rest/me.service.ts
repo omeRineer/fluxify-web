@@ -14,9 +14,7 @@ export class MeService extends BaseHttpService {
         super("me")
     }
 
-    getChatRooms(): Observable<ApiDataResponse<DataList<ChatDto.List>>> {
-        return this.get<ApiDataResponse<DataList<ChatDto.List>>>(`/chat-rooms`)
-    }
+    
 
     getNotifications(): Observable<ApiDataResponse<DataList<ChatDto.List>>> {
         return this.get<ApiDataResponse<DataList<ChatDto.List>>>(`/notifications`)

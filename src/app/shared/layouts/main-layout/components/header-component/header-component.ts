@@ -22,6 +22,7 @@ export class HeaderComponent {
   
   onLogout(){
     this.authService.logout()
+    this.presenceHubService.disconnect()
     this.router.navigate(["/login"])
   }
 }

@@ -25,6 +25,10 @@ export class ChatService extends BaseHttpService {
         })
     }
 
+    getRooms(): Observable<ApiDataResponse<DataList<ChatDto.List>>> {
+        return this.get<ApiDataResponse<DataList<ChatDto.List>>>(`/rooms`)
+    }
+
     sendMessage(text: string, chatId: string): Observable<ApiResponse> {
         return this.post<ApiResponse>(`/${chatId}/message`, { text: text })
     }
