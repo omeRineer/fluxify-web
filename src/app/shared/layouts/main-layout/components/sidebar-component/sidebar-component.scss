@@ -1,0 +1,225 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  width: var(--fx-sidebar-w);
+  height: 100%;
+  background: var(--fx-surface);
+  border-right: 1px solid var(--fx-line-soft);
+  flex-shrink: 0;
+  transition: width var(--fx-med) var(--fx-ease);
+  overflow: hidden;
+}
+
+:host(.sidebar--collapsed) {
+  width: var(--fx-sidebar-w-collapsed);
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  min-height: var(--fx-topbar-h);
+  border-bottom: 1px solid var(--fx-line-soft);
+}
+
+.sidebar__mark {
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--fx-gradient);
+  color: #fff;
+  box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5);
+  animation: fx-glow 3.2s ease-in-out infinite;
+
+  svg {
+    width: 17px;
+    height: 17px;
+  }
+}
+
+@keyframes fx-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(139, 92, 246, 0);
+  }
+}
+
+.sidebar__brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.sidebar__name {
+  font-size: var(--fx-text-md);
+  font-weight: 700;
+  color: var(--fx-ink);
+}
+
+.sidebar__version {
+  font-size: 10.5px;
+  color: var(--fx-fog);
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 12px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--fx-radius-md);
+  color: var(--fx-mist);
+  transition: background var(--fx-fast) var(--fx-ease), color var(--fx-fast) var(--fx-ease);
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--fx-elevated);
+    color: var(--fx-ink);
+  }
+
+  &--active {
+    background: var(--fx-elevated);
+    color: var(--fx-ink);
+
+    .nav-item__icon {
+      color: var(--fx-azure);
+    }
+
+    .nav-item__marker {
+      background: var(--fx-gradient);
+    }
+  }
+}
+
+.nav-item__marker {
+  position: absolute;
+  left: -12px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: var(--fx-radius-pill);
+  background: transparent;
+}
+
+.nav-item__icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.nav-item__label {
+  flex: 1;
+  font-size: var(--fx-text-base);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-item__badge {
+  flex: 0 0 auto;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--fx-radius-pill);
+  background: var(--fx-gradient);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+
+  &--dot {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    min-width: 8px;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+  }
+}
+
+.sidebar__collapse {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 12px 16px;
+  padding: 10px 12px;
+  border-radius: var(--fx-radius-md);
+  border: 1px solid var(--fx-line-soft);
+  color: var(--fx-fog);
+  font-size: var(--fx-text-sm);
+  transition: color var(--fx-fast) var(--fx-ease), border-color var(--fx-fast) var(--fx-ease);
+
+  svg {
+    width: 15px;
+    height: 15px;
+    transition: transform var(--fx-med) var(--fx-ease);
+  }
+
+  &:hover {
+    color: var(--fx-ink);
+    border-color: var(--fx-azure);
+  }
+}
+
+.sidebar__collapse-icon--flipped {
+  transform: rotate(180deg);
+}
+
+:host(.sidebar--collapsed) {
+  .sidebar__brand {
+    justify-content: center;
+    padding: 20px 0;
+  }
+
+  .sidebar__nav {
+    align-items: center;
+  }
+
+  .nav-item {
+    justify-content: center;
+    width: 44px;
+    padding: 10px;
+  }
+
+  .nav-item__marker {
+    left: -12px;
+  }
+
+  .sidebar__collapse {
+    justify-content: center;
+    margin: 8px auto 16px;
+    width: 40px;
+    padding: 10px;
+  }
+}

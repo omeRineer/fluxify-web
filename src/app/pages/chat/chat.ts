@@ -14,7 +14,7 @@ import { SpinnerComponent } from '../../shared/components/spinner.component';
     SpinnerComponent
   ],
   templateUrl: './chat.html',
-  styleUrl: './chat.css',
+  styleUrl: './chat.scss',
 })
 export class Chat implements OnInit, OnDestroy {
   chatHubService = inject(ChatHubService)

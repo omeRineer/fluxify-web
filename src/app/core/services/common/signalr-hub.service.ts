@@ -3,17 +3,20 @@ import * as signalR from '@microsoft/signalr';
 import { from, Observable } from 'rxjs';
 import { ToastService } from './toast.service';
 import { HubConnectionStatus } from '../../models/common/signalr.models';
+import { UserContextService } from './userContext.service';
 
 
 export abstract class SignalrHubService {
   protected hubConnection!: signalR.HubConnection;
   protected connectionStatus = signal<HubConnectionStatus>('Connecting')
   protected toastService = inject(ToastService)
+  protected userContext = inject(UserContextService)
 
   public connectionStatus$ = this.connectionStatus.asReadonly();
 
   constructor(protected hubUrl: string) {
     this.createConnection();
+    this.userContext.onClear$.subscribe(this.disconnect)
   }
 
 

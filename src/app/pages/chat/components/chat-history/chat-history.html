@@ -1,70 +1,108 @@
-<section class="chat-main">
-  <!-- Header -->
-  <header class="chat-header">
-    <div class="active-user-info">
-      <div class="avatar-wrapper">
-        <div class="user-avatar">AD</div>
-        <span class="status-badge online"></span>
-      </div>
-      <div class="active-details">
-        <h3>{{ selectedRoom()?.title }}</h3>
-        <p>Software Developer - Client Stream</p>
-      </div>
+@if(isLoading()){
+<app-spinner></app-spinner>
+}
+@else {
+@if (activeRoom(); as r) {
+<header class="history__header">
+  <div class="history__peer">
+    <span class="history__avatar">AD</span>
+    <div class="history__peer-text">
+      <span class="history__name">{{ r.title }}</span>
+      @if (r.isTyping()) {
+      <span class="history__status history__status--typing">
+        yazıyor
+        <span class="dots"><span></span><span></span><span></span></span>
+      </span>
+      } @else {
+      <span class="history__status">{{ r.title }}</span>
+      }
     </div>
-    <div class="chat-actions">
-      <button class="action-btn" title="Call Info"><i class="fa-solid fa-circle-info"></i></button>
-      <button class="action-btn" title="More Options"><i class="fa-solid fa-ellipsis-vertical"></i></button>
-    </div>
-  </header>
-  @if(isLoading()){
-  <app-spinner></app-spinner>
-  }
-  @else {
-  <div class="message-history">
-
-    @for (msg of chatMessages(); track $index) {
-    <div class="message-row" [class.incoming]="msg.userId !== usercontext.user$().NameIdentifier"
-      [class.outgoing]="msg.userId === usercontext.user$().NameIdentifier">
-
-      <div class="message-box">
-        @if (msg.userId !== usercontext.user$().NameIdentifier) {
-        <span class="message-sender">{{ msg.name }}</span>
-        }
-        <p class="message-text">{{ msg.text }}</p>
-        <span class="message-time">{{ msg.date | date:'shortTime' }}</span>
-      </div>
-    </div>
-    }
-
-
-    @if(typingCounter() > 0)
-    {
-    <div class="chat-typing-wrapper">
-      <!-- <div class="typing-avatar">
-        <i class="fa-solid fa-user"></i>
-      </div> -->
-
-      <div class="typing-bubble">
-        <div class="typing-dots">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
-      </div>
-    </div>
-    }
   </div>
 
-  <!-- Footer -->
-  <footer class="chat-footer">
-    <div class="input-container">
-      <button class="attach-btn" type="button"><i class="fa-solid fa-paperclip"></i></button>
-      <input #messageBox [ngModel]="messageText()" (ngModelChange)="messageText.set($event)"
-        (keydown)="onKeyDown($event)" (input)="onInputChange($event)" type="text" placeholder="Type a message..." />
+  <div class="history__actions">
+    <button type="button" class="icon-btn" title="Sohbet bilgisi">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+        <path d="M12 11v5.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <circle cx="12" cy="8.3" r="0.9" fill="currentColor" />
+      </svg>
+    </button>
 
-      <button (click)="sendMessage()" [disabled]="!messageText().trim()" class="send-btn" type="button"><i
-          class="fa-solid fa-paper-plane"></i></button>
+    <div class="menu">
+      <button type="button" class="icon-btn" title="Diğer" (click)="toggleMenu()">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="5.5" r="1.4" fill="currentColor" />
+          <circle cx="12" cy="12" r="1.4" fill="currentColor" />
+          <circle cx="12" cy="18.5" r="1.4" fill="currentColor" />
+        </svg>
+      </button>
+
+      @if (menuOpen()) {
+      <div class="menu__panel" role="menu">
+        <a class="menu__item" role="menuitem">Sessize al</a>
+        <a class="menu__item" role="menuitem">Arşivle</a>
+        <span class="menu__sep"></span>
+        <a class="menu__item menu__item--danger" role="menuitem">Sohbeti sil</a>
+      </div>
+      }
     </div>
-  </footer>
+  </div>
+</header>
+
+<div class="history__list">
+  @for (message of chatMessages(); track $index) {
+  <div class="bubble-row" [class.bubble-row--own]="message.userId === usercontext.user$().NameIdentifier">
+    @if (message.userId !== usercontext.user$().NameIdentifier) {
+    <span class="bubble-row__avatar">AD</span>
+    }
+
+    <div class="bubble">
+      @if (message.userId !== usercontext.user$().NameIdentifier) {
+      <span class="bubble__sender">{{ message.name }}</span>
+      }
+      <p class="bubble__text">{{ message.text }}</p>
+      <span class="bubble__time">{{ message.date }}</span>
+    </div>
+  </div>
   }
-</section>
+
+  @if (r.isTyping()) {
+  <div class="bubble-row">
+    <span class="bubble-row__avatar">AD</span>
+    <div class="bubble bubble--typing">
+      <span class="dots"><span></span><span></span><span></span></span>
+    </div>
+  </div>
+  }
+
+  <div #scrollAnchor></div>
+</div>
+
+<footer class="composer">
+  <button type="button" class="icon-btn" title="Dosya ekle">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M8 12.5 15 5.5a3.5 3.5 0 0 1 5 5l-8.5 8.5a5.5 5.5 0 1 1-7.8-7.8L12 3" stroke="currentColor"
+        stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+
+  <input type="text" placeholder="Bir mesaj yazın..." [ngModel]="messageText()"
+    (ngModelChange)="messageText.set($event)" (input)="onInputChange($event)" (keydown)="onKeyDown($event)" />
+
+  <button type="button" class="send-btn" [disabled]="!messageText().trim()" (click)="sendMessage()">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M4 12 20 4l-6 16-2.5-7L4 12Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+    </svg>
+  </button>
+</footer>
+} @else {
+<div class="history__empty">
+  <svg viewBox="0 0 24 24" fill="none" class="history__empty-icon">
+    <path
+      d="M4 5.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9.8L5.4 19.4a.6.6 0 0 1-1-.47V16H4a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z"
+      stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+  </svg>
+  <p>Görüntülemek için bir sohbet seç</p>
+</div>
+}
+}

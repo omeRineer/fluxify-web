@@ -1,48 +1,48 @@
-<aside class="sidebar">
-    <!-- Logo Bölümü -->
-    <div class="logo-area">
-        <div class="logo-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-            </svg>
-        </div>
-        <div class="logo-text">
-            <h2>Fluxify</h2>
-            <span>Console v1.0</span>
-        </div>
+
+<div class="sidebar__brand">
+  <div class="sidebar__mark">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M13 2 4 13.5h6.2L10.5 22 20 9.8h-6.4L13 2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </div>
+
+  @if (!collapsed()) {
+    <div class="sidebar__brand-text">
+      <span class="sidebar__name">Fluxify</span>
+      <span class="sidebar__version fx-mono">Console v1.0</span>
     </div>
+  }
+</div>
 
-    <nav class="nav-menu">
-        @for (menuItem of menuItems; track $index) {
-        @if(!menuItem.children){
-        <a routerLink="{{menuItem.route}}" routerLinkActive="active" class="nav-item">
-            <i class="nav-icon" [class]="menuItem.icon"></i>
-            <span>{{menuItem.title}}</span>
-        </a>
-        }
-        @else {
-        <div class="nav-group">
-            <button type="button" class="nav-item nav-dropdown-toggle">
-                <i class="nav-icon" [class]="menuItem.icon"></i>
-                <span class="nav-title">{{menuItem.title}}</span>
-                <i class="fa-solid fa-chevron-down nav-arrow"></i>
-            </button>
+<nav class="sidebar__nav">
+  @for (item of navItems; track item.route) {
+    <a
+      class="nav-item"
+      [routerLink]="item.route"
+      routerLinkActive="nav-item--active"
+      [title]="collapsed() ? item.label : ''"
+    >
+      <span class="nav-item__marker"></span>
 
-            <div class="nav-submenu">
-                @for (subMenuItem of menuItem.children; track $index) {
-                <a routerLink="{{subMenuItem.route}}" routerLinkActive="active" class="nav-sub-item">
-                    <span>{{subMenuItem.title}}</span>
-                </a>
-                }
-            </div>
-        </div>
-        }
-        }
-    </nav>
+      <span class="nav-item__icon">
+        <i class="nav-icon" [class]="item.icon"></i>
+      </span>
 
-    <!-- Alt Bilgi / Çevre Belirteci -->
-    <div class="sidebar-footer">
+      @if (!collapsed()) {
+        <span class="nav-item__label">{{ item.label }}</span>
+      }
+    </a>
+  }
+</nav>
 
-    </div>
-</aside>
+<button type="button" class="sidebar__collapse" (click)="toggleCollapsed()">
+  <svg viewBox="0 0 24 24" fill="none" [class.sidebar__collapse-icon--flipped]="collapsed()">
+    <path d="M14.5 5 8 12l6.5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  @if (!collapsed()) {
+    <span>Daralt</span>
+  }
+</button>

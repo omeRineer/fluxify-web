@@ -1,17 +1,13 @@
-<div class="chat-container">
+<div class="chat-shell">
     @if(chatHubService.connectionStatus$() === 'Connecting'){
     <app-spinner></app-spinner>
     }
     @else {
-    <app-chat-rooms></app-chat-rooms>
-
-    <div class="chat-main-area">
-
+    <div class="chat-shell__rooms">
+        <app-chat-rooms></app-chat-rooms>
+    </div>
+    <div class="chat-shell__history">
         <router-outlet></router-outlet>
-
     </div>
     }
-
-
-
 </div>

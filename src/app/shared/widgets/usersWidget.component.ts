@@ -2,7 +2,7 @@ import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../core/services/rest/user.service';
-import { UserDto } from '../../core/models/entity/user.models';
+import { UserDto } from '../../core/models/rest/user.models';
 import { CoreModalComponent } from '../../core/components/core-modal.component';
 import { SpinnerComponent } from "../components/spinner.component";
 import { UserContextService } from '../../core/services/common/userContext.service';

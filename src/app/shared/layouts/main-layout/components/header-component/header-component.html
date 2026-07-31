@@ -1,98 +1,35 @@
-<header class="main-header">
-  <!-- Sol Bölüm: Arama -->
-  <div class="header-left">
+<header class="topbar">
+  <div class="topbar__title">
+    <h1>Fluxify</h1>
   </div>
 
-  <div class="header-right">
+  <div class="topbar__actions">
+    <app-notification-popover></app-notification-popover>
 
-    <div class="fluxify-dropdown" tabindex="0">
-      <button type="button" class="notification-btn" title="Bildirimler">
-        <i class="fa-regular fa-bell"></i>
-        <span class="notification-badge">3</span>
+    <span class="topbar__divider"></span>
+
+    <div class="user-menu">
+      <button type="button" class="user-menu__trigger" (click)="toggleUserMenu()">
+        <span class="user-menu__avatar">AD</span>
+        <span class="user-menu__info">
+          <span class="user-menu__name">{{ userContext.user$().Name }}</span>
+          <span class="user-menu__role fx-mono">User</span>
+        </span>
+        <svg viewBox="0 0 24 24" fill="none" class="user-menu__chevron"
+          [class.user-menu__chevron--open]="userMenuOpen()">
+          <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
       </button>
 
-      <div class="fluxify-dropdown-menu notification-menu">
-        <div class="notification-header">
-          <div class="flex items-center justify-between w-full">
-            <span class="font-semibold text-xs text-slate-200">Bildirimler</span>
-          </div>
-        </div>
-
-        <div class="fluxify-dropdown-divider"></div>
-
-        <div class="notification-list custom-scrollbar">
-
-          @for (notification of presenceHubService.notifications(); track $index) {
-          <div class="notification-item">
-            <div class="notification-icon bg-slate-800 text-slate-400 border border-slate-700">
-              <i class="fa-solid fa-server text-xs"></i>
-            </div>
-            <div class="notification-content">
-              <p class="notification-text">{{ notification.title }}</p>
-              <span class="notification-time">{{ notification.date | smartDate}}</span>
-            </div>
-          </div>
-          }
-
-        </div>
-
-        <div class="fluxify-dropdown-divider"></div>
-
-        <!-- Alt Alan (Tümünü Gör) -->
-        <div class="notification-footer">
-          <button type="button" class="view-all-btn">
-            Tüm Bildirimleri Gör
-          </button>
-        </div>
+      @if (userMenuOpen()) {
+      <div class="user-menu__panel" role="menu">
+        <a class="user-menu__item" role="menuitem">Profil</a>
+        <a class="user-menu__item" role="menuitem">Ayarlar</a>
+        <span class="user-menu__sep"></span>
+        <a class="user-menu__item user-menu__item--danger" role="menuitem" (click)="onLogout()">Çıkış yap</a>
       </div>
-    </div>
-
-
-    <div class="divider"></div>
-
-    <div class="fluxify-dropdown" tabindex="0">
-      <!-- Tetikleyici Alan -->
-      <div class="user-profile cursor-pointer">
-        <div class="avatar">
-          <i class="fa-solid fa-user-gear"></i>
-        </div>
-        <div class="profile-info">
-          <span class="username">{{ userContext.user$().Name }}</span>
-          <span class="role">User</span>
-        </div>
-        <i class="fa-solid fa-chevron-down fluxify-dropdown-arrow ml-1"></i>
-      </div>
-
-      <!-- Global Dropdown Menü -->
-      <div class="fluxify-dropdown-menu">
-        <div class="fluxify-dropdown-header">
-          <p class="fluxify-dropdown-header-text">{{ userContext.user$().Device }}</p>
-        </div>
-
-        <div class="fluxify-dropdown-divider"></div>
-
-        <ul class="fluxify-dropdown-list">
-          <li>
-            <button type="button" class="fluxify-dropdown-item">
-              <i class="fa-solid fa-user"></i>
-              <span>Profil</span>
-            </button>
-          </li>
-          <li>
-            <button type="button" class="fluxify-dropdown-item">
-              <i class="fa-solid fa-sliders"></i>
-              <span>Ayarlar</span>
-            </button>
-          </li>
-        </ul>
-
-        <div class="fluxify-dropdown-divider"></div>
-
-        <button (click)="onLogout()" type="button" class="fluxify-dropdown-item danger">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span>Çıkış Yap</span>
-        </button>
-      </div>
+      }
     </div>
   </div>
 </header>

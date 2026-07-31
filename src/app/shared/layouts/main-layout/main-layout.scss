@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  height: 100%;
+  font-family: var(--fx-font-ui);
+}
+
+.shell {
+  display: flex;
+  height: 100vh;
+  background: var(--fx-canvas);
+  color: var(--fx-ink);
+}
+
+.shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background: var(--fx-canvas);
+}
+

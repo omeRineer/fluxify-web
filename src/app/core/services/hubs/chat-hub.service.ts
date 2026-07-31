@@ -2,15 +2,17 @@ import { inject, Injectable, signal } from "@angular/core";
 import { SignalrHubService } from "../common/signalr-hub.service";
 import { environment } from "../../../../environments/environment.development";
 import { UserContextService } from "../common/userContext.service";
-import { MessagePayload, TypingCounterPayload } from "../../models/hub/chat.models";
+import { MessagePayload } from "../../models/hub/chat.models";
 import { Observable } from "rxjs";
+import { ChatStore } from "../stores/chat.store";
+import { MessageStore } from "../stores/message.store";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ChatHubService extends SignalrHubService {
-    public messages = signal<MessagePayload[]>([])
-    public onTypings = signal<TypingCounterPayload[]>([])
+    private readonly chatStore = inject(ChatStore);
+    private readonly messageStore = inject(MessageStore);
 
     constructor() {
         const token = inject(UserContextService).user$().Token;
@@ -21,39 +23,22 @@ export class ChatHubService extends SignalrHubService {
 
     override registerEvents(): void {
         this.hubConnection.on("ReceiveMessage", (message: MessagePayload) => {
-            this.messages.update(prev => [
-                ...prev,
-                {
-                    ...message
-                }
-            ])
+            this.messageStore.add({
+                id:message.id,
+                chatId: message.chatId,
+                name: message.name,
+                text: message.text,
+                userId: message.userId,
+                date: new Date(message.date)
+            })
         });
 
         this.hubConnection.on("OnTyping", (message: { chatId: string; isTyping: boolean }) => {
-            this.onTypings.update((prev: TypingCounterPayload[]) => {
-                const existingIndex = prev.findIndex(item => message.chatId in item);
+            const targetChat = this.chatStore.find(message.chatId);
 
-                if (existingIndex === -1) {
-                    if (message.isTyping) {
-                        return [...prev, { [message.chatId]: 1 }];
-                    }
-                    return prev;
-                }
-
-                const currentCounter = prev[existingIndex][message.chatId];
-                const newCounter = message.isTyping
-                    ? currentCounter + 1
-                    : Math.max(0, currentCounter - 1);
-
-                if (newCounter === 0) {
-                    return prev.filter((_, idx) => idx !== existingIndex);
-                }
-
-                const updated = [...prev];
-                updated[existingIndex] = { [message.chatId]: newCounter };
-
-                return updated;
-            });
+            if (targetChat) {
+                targetChat.onTyping(message.isTyping);
+            }
         });
     }
 

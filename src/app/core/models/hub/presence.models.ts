@@ -9,8 +9,8 @@ export interface NotificationPayload {
 }
 
 export interface UserStatePayload {
-    userId:string;
+    id:string;
+    key:string;
     status:string;
     date:Date;
-    title:string;
 }

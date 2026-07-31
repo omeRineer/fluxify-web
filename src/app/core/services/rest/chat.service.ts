@@ -3,8 +3,8 @@ import { BaseHttpService } from "../common/http.service";
 import { Observable } from "rxjs";
 import { ApiDataResponse, ApiResponse } from "../../models/common/api.models";
 import { DataList } from "../../models/common/data.models";
-import { MessageDto } from "../../models/entity/message.models";
-import { ChatDto } from "../../models/entity/chat.models";
+import { MessageDto } from "../../models/rest/message.models";
+import { ChatDto } from "../../models/rest/chat.models";
 
 @Injectable({
     providedIn: "root"

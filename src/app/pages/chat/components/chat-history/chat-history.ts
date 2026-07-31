@@ -1,100 +1,148 @@
-import { Component, computed, effect, inject, input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
-import { ChatHubService } from '../../../../core/services/hubs/chat-hub.service';
-import { CommonModule, DatePipe } from '@angular/common';
-import { ChatService } from '../../../../core/services/rest/chat.service';
-import { SpinnerComponent } from "../../../../shared/components/spinner.component";
-import { CoreComponent } from '../../../../core/components/core.component';
-import { UserContextService } from '../../../../core/services/common/userContext.service';
-import { Stores } from '../../../../core/services/common/stores';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { finalize, map } from 'rxjs';
+import {
+  takeUntilDestroyed,
+  toSignal
+} from '@angular/core/rxjs-interop';
+
+import { CoreComponent } from '../../../../core/components/core.component';
+import { SpinnerComponent } from '../../../../shared/components/spinner.component';
+import { TimeAgoPipe } from '../../../../core/pipes/time-ago.pipe';
+
+import { ChatFacade } from '../../../../core/services/facades/chat-facade.service';
+import { ChatStore } from '../../../../core/services/stores/chat.store';
+import { MessageStore } from '../../../../core/services/stores/message.store';
 
 @Component({
   selector: 'app-chat-history',
   standalone: true,
   imports: [
-    DatePipe,
+    TimeAgoPipe,
     SpinnerComponent,
     CommonModule,
     FormsModule
   ],
   templateUrl: './chat-history.html',
-  styleUrl: './chat-history.css',
+  styleUrl: './chat-history.scss',
 })
-export class ChatHistory extends CoreComponent implements OnDestroy, OnInit {
-  protected chatHubService = inject(ChatHubService);
-  protected chatService = inject(ChatService)
-  protected usercontext = inject(UserContextService);
+export class ChatHistory extends CoreComponent {
 
-  messageText = signal<string>('');
+  readonly chatFacade = inject(ChatFacade);
+  readonly chatStore = inject(ChatStore);
+  readonly messageStore = inject(MessageStore);
+
+  readonly menuOpen = signal(false);
+
   private isTyping = false;
+  private prevRoomId: string | null = null;
 
-  roomId = input<string>("")
-  prevRoomId: string | null = null;
-  selectedRoom = inject(Stores).selectedRoom;
-  messages = this.chatHubService.messages;
-  chatMessages = computed(() => {
-    const activeRoomId = this.roomId();
-    if (!activeRoomId) return [];
+  readonly messageText = signal('');
 
-    return this.messages().filter(msg =>
-      msg.chatId === activeRoomId
-    );
-  })
-  typingCounter = computed(() => {
-    const activeRoomId = this.roomId();
+  readonly roomId = toSignal(
+    this.route.paramMap.pipe(
+      map(params => params.get('roomId'))
+    ),
+    {
+      initialValue: null
+    }
+  );
 
-    const existingIndex = this.chatHubService.onTypings().findIndex(item => activeRoomId in item);
+  readonly activeRoom = computed(() => {
+    const roomId = this.roomId();
 
-    if (existingIndex === -1)
-      return 0;
+    if (!roomId) {
+      return null;
+    }
 
-    return this.chatHubService.onTypings()[existingIndex][activeRoomId]
-  })
+    return this.chatStore.find(roomId) ?? null;
+  });
+
+  readonly chatMessages = computed(() => {
+    const roomId = this.roomId();
+
+    if (!roomId) {
+      return [];
+    }
+
+    return this.messageStore
+      .entities()
+      .filter(x => x.chatId === roomId);
+  });
 
   constructor() {
+    super();
 
-    super()
     effect(() => {
-      this.sendTypingStatus(this.prevRoomId ?? this.roomId(), false);
-      this.prevRoomId = this.roomId();
-      this.messageText.set('')
-      const id = this.roomId();
-      if (id) {
-        this.getHistory(id);
+
+      const room = this.activeRoom();
+
+      if (!room) {
+        return;
       }
-    })
-  }
-  ngOnInit(): void {
-    this.prevRoomId = this.roomId();
+
+      if (this.prevRoomId && this.prevRoomId !== room.id) {
+        this.chatFacade
+          .sendTypingStatus(this.prevRoomId, false)
+          .subscribe();
+      }
+
+      this.prevRoomId = room.id;
+      this.messageText.set('');
+
+      this.isLoading.set(true);
+
+      this.chatFacade
+        .getHistory(room.id)
+        .pipe(
+          finalize(() => this.isLoading.set(false))
+        )
+        .subscribe();
+
+    });
   }
 
   ngOnDestroy(): void {
-    this.sendTypingStatus(this.roomId(), false);
+
+    const room = this.activeRoom();
+
+    if (!room) {
+      return;
+    }
+
+    this.chatFacade
+      .sendTypingStatus(room.id, false)
+      .subscribe();
   }
 
-  getHistory(id: string) {
-    this.isLoading.set(true)
-    this.chatService.getHistory(id).subscribe(res => {
-      const messagesData = res.data.items.map(m => ({
-        chatId: m.chatId,
-        userId: m.userId,
-        text: m.text,
-        date: m.date,
-        name: m.name
-      }))
-      this.messages.set(messagesData)
-      this.isLoading.set(false)
-    })
+  toggleMenu(): void {
+    this.menuOpen.update(v => !v);
   }
 
-  sendMessage() {
-    this.chatService.sendMessage(this.messageText(), this.roomId()).subscribe(res => {
-      this.messageText.set('')
-      this.sendTypingStatus(this.roomId(), false)
-    })
+  sendMessage(): void {
+
+    const room = this.activeRoom();
+
+    if (!room || !this.messageText().trim()) {
+      return;
+    }
+
+    this.chatFacade
+      .sendMessage(room.id, this.messageText())
+      .subscribe(() => {
+        this.messageText.set('');
+      });
   }
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent): void {
+
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       this.sendMessage();
@@ -102,25 +150,31 @@ export class ChatHistory extends CoreComponent implements OnDestroy, OnInit {
   }
 
   onInputChange(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const value = inputElement.value.trim();
 
-    // 1. İnput içinde değer var mı?
-    if (value.length > 0) {
-      if (!this.isTyping) {
-        this.isTyping = true;
-        this.sendTypingStatus(this.roomId(), true);
-      }
+    const room = this.activeRoom();
 
-    } else {
-      if (this.isTyping) {
-        this.isTyping = false;
-        this.sendTypingStatus(this.roomId(), false);
-      }
+    if (!room) {
+      return;
     }
-  }
 
-  private sendTypingStatus(roomId: string, isTyping: boolean): void {
-    this.chatHubService.onTyping(roomId, isTyping).subscribe()
+    const input = event.target as HTMLInputElement;
+    const hasValue = input.value.trim().length > 0;
+
+    if (hasValue && !this.isTyping) {
+
+      this.isTyping = true;
+
+      this.chatFacade
+        .sendTypingStatus(room.id, true)
+        .subscribe();
+
+    } else if (!hasValue && this.isTyping) {
+
+      this.isTyping = false;
+
+      this.chatFacade
+        .sendTypingStatus(room.id, false)
+        .subscribe();
+    }
   }
 }

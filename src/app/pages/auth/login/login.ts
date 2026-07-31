@@ -18,8 +18,6 @@ import { LoginRequest } from '../../../core/models/common/auth.models';
 })
 export class Login extends CoreComponent {
   private authService = inject(AuthService);
-  private toastService = inject(ToastService);
-  private router = inject(Router);
 
   username = signal('');
   password = signal('');

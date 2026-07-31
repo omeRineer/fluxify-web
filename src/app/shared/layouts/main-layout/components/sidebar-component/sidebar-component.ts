@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output, signal } from '@angular/core';
 import { RouterLinkActive, RouterModule } from '@angular/router';
 import { NavItem } from '../../../../../core/models/ui/sidebar.models';
 
@@ -8,21 +8,29 @@ import { NavItem } from '../../../../../core/models/ui/sidebar.models';
   imports: [
     RouterModule,
     RouterLinkActive
-],
+  ],
   templateUrl: './sidebar-component.html',
-  styleUrl: './sidebar-component.css',
+  styleUrl: './sidebar-component.scss',
 })
 export class SidebarComponent {
-  menuItems: NavItem[] = [
+  navItems: NavItem[] = [
     {
-      title: 'Dashboard',
+      label: 'Dashboard',
       icon: 'fa-solid fa-chart-pie',
       route: '/dashboard'
     },
     {
-      title: 'Sohbet',
+      label: 'Sohbet',
       icon: 'fa-solid fa-comment',
       route: '/chat'
     }
   ];
+  readonly collapsed = signal(false);
+
+  readonly collapsedChange = output<boolean>();
+
+  toggleCollapsed(): void {
+    this.collapsed.update(v => !v);
+    this.collapsedChange.emit(this.collapsed());
+  }
 }
