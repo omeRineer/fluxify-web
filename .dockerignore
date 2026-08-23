@@ -3,4 +3,3 @@ npm-debug.log
 dist
 .git
 .editorconfig
-package-lock.json
