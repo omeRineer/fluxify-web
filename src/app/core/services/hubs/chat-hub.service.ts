@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { SignalrHubService } from "../common/signalr-hub.service";
-import { environment } from "../../../../environments/environment.development";
+import { environment } from "../../../../environments/environment";
 import { UserContextService } from "../common/userContext.service";
 import { MessagePayload } from "../../models/hub/chat.models";
 import { Observable } from "rxjs";

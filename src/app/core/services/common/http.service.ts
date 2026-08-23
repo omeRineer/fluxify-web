@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from "@angular
 import { inject, Signal, signal, WritableSignal } from "@angular/core";
 import { catchError, finalize, firstValueFrom, Observable, throwError } from "rxjs";
 import { HttpOptions } from "../../models/common/http.models";
-import { environment } from "../../../../environments/environment.development";
+import { environment } from "../../../../environments/environment";
 
 
 
