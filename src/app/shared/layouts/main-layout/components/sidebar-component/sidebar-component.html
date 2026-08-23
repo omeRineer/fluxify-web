@@ -1,0 +1,48 @@
+
+<div class="sidebar__brand">
+  <div class="sidebar__mark">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M13 2 4 13.5h6.2L10.5 22 20 9.8h-6.4L13 2Z"
+        fill="currentColor"
+      />
+    </svg>
+  </div>
+
+  @if (!collapsed()) {
+    <div class="sidebar__brand-text">
+      <span class="sidebar__name">Fluxify</span>
+      <span class="sidebar__version fx-mono">Console v1.0</span>
+    </div>
+  }
+</div>
+
+<nav class="sidebar__nav">
+  @for (item of navItems; track item.route) {
+    <a
+      class="nav-item"
+      [routerLink]="item.route"
+      routerLinkActive="nav-item--active"
+      [title]="collapsed() ? item.label : ''"
+    >
+      <span class="nav-item__marker"></span>
+
+      <span class="nav-item__icon">
+        <i class="nav-icon" [class]="item.icon"></i>
+      </span>
+
+      @if (!collapsed()) {
+        <span class="nav-item__label">{{ item.label }}</span>
+      }
+    </a>
+  }
+</nav>
+
+<button type="button" class="sidebar__collapse" (click)="toggleCollapsed()">
+  <svg viewBox="0 0 24 24" fill="none" [class.sidebar__collapse-icon--flipped]="collapsed()">
+    <path d="M14.5 5 8 12l6.5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+  @if (!collapsed()) {
+    <span>Daralt</span>
+  }
+</button>

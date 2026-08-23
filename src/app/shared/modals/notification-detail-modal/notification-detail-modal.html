@@ -1,0 +1,75 @@
+@if(isLoading()){
+<app-spinner></app-spinner>
+}
+@else if(notification(); as notification){
+<div class="fx-modal-body">
+  <div class="detail__top">
+    @if (notification.thumbnail) {
+    <img class="detail__thumbnail" [src]="notification.thumbnail" alt="" />
+    } @else {
+    <span class="detail__icon" [attr.data-level]="notification.level">
+      @switch (notification.level) {
+      @case ('fatal') {
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      }
+      @case ('warning') {
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M12 4 2.5 20h19L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M12 10v4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <circle cx="12" cy="17.2" r="0.9" fill="currentColor" />
+      </svg>
+      }
+      @case ('chat') {
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M4 5.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9.8L5.4 19.4a.6.6 0 0 1-1-.47V16H4a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z"
+          stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+      </svg>
+      }
+      @case ('info') {
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+        <path d="M12 11v5.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        <circle cx="12" cy="8.3" r="0.9" fill="currentColor" />
+      </svg>
+      }
+      @default {
+      <svg viewBox="0 0 24 24" fill="none">
+        <path
+          d="M12 3.5c-3.1 0-5.6 2.5-5.6 5.6v2.9c0 .6-.2 1.1-.6 1.6l-1.1 1.4c-.6.8-.1 2 .9 2h13c1 0 1.5-1.2.9-2l-1.1-1.4c-.4-.5-.6-1-.6-1.6V9.1c0-3.1-2.5-5.6-5.8-5.6z"
+          stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      }
+      }
+    </span>
+    }
+
+    <div class="detail__heading">
+      <h3>{{ notification.title }}</h3>
+      <span class="detail__timeStamp">{{ notification.timestamp | smartDate }}</span>
+    </div>
+  </div>
+
+  <p class="detail__summary">{{ notification.summary }}</p>
+
+  @if (notification.url) {
+  <a class="detail__link" [href]="notification.url" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M9 15 20 4M20 4h-6M20 4v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+        stroke-linejoin="round" />
+      <path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" stroke="currentColor" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    Bağlantıyı aç
+  </a>
+  }
+</div>
+
+<div class="fx-modal-footer">
+  <button type="button" class="fx-btn fx-btn--ghost notification-close" [disabled]="isLoading()" (click)="close()">Kapat</button>
+</div>
+
+}

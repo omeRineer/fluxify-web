@@ -1,0 +1,106 @@
+<div class="notification-wrapper">
+    <button type="button" class="bell" [class.bell--active]="isOpen()" (click)="toggle()"
+        [attr.aria-expanded]="isOpen()" aria-haspopup="true" aria-label="Bildirimler">
+        <svg viewBox="0 0 24 24" fill="none" class="bell__icon">
+            <path
+                d="M12 3.5c-3.1 0-5.6 2.5-5.6 5.6v2.9c0 .6-.2 1.1-.6 1.6l-1.1 1.4c-.6.8-.1 2 .9 2h13c1 0 1.5-1.2.9-2l-1.1-1.4c-.4-.5-.6-1-.6-1.6V9.1c0-3.1-2.5-5.6-5.8-5.6z"
+                stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+
+        @if (notificationStore.unreadCount() > 0) {
+        <span class="bell__badge">{{ badgeLabel() }}</span>
+        }
+    </button>
+
+    @if (isOpen()) {
+    <div class="panel" role="menu">
+        <header class="panel__header">
+            <div class="panel__heading">
+                <h2>Bildirimler</h2>
+                @if (notificationStore.unreadCount()) {
+                <span class="panel__count">{{ notificationStore.unreadCount() }} yeni</span>
+                }
+            </div>
+
+            @if (notificationStore.unreadCount() > 0) {
+            <button type="button" class="panel__mark-all" (click)="markAllAsRead()">
+                Tümünü okundu işaretle
+            </button>
+            }
+        </header>
+
+        <div class="panel__tabs">
+            <button type="button" class="tab" [class.tab--active]="filter() === 'all'" (click)="setFilter('all')">
+                Tümü
+            </button>
+            <button type="button" class="tab" [class.tab--active]="filter() === 'unread'" (click)="setFilter('unread')">
+                Okunmamış
+            </button>
+        </div>
+
+        <div class="panel__list">
+            @for (notification of visibleNotifications(); track notification.id) {
+            <div class="item" [class.item--unread]="!notification.read" role="menuitem" tabindex="0"
+                (click)="select(notification)" (keydown.enter)="select(notification)">
+                <div class="item__marker" [class.item__marker--visible]="!notification.read"></div>
+
+                @if (notification.level === 'message') {
+                <div class="item__avatar"></div>
+                } @else {
+                <div class="item__icon" [attr.data-type]="notification.level">
+                    @switch (notification.level) {
+                    @case ('fatal') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 4 2.5 20h19L12 4Z" stroke="currentColor" stroke-width="1.6"
+                            stroke-linejoin="round" />
+                        <path d="M12 10v4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        <circle cx="12" cy="17.2" r="0.9" fill="currentColor" />
+                    </svg>
+                    }
+                    @case ('success') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    }
+                    @default {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+                        <path d="M12 8v4.5l3 1.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    }
+                    }
+                </div>
+                }
+
+                <div class="item__body">
+                    <p class="item__title">{{ notification.title }}</p>
+                    <p class="item__description">{{ notification.summary }}</p>
+                    <span class="item__time">{{ notification.timestamp | timeAgo}}</span>
+                </div>
+
+                <button type="button" class="item__dismiss" (click)="dismiss($event, notification.id)"
+                    aria-label="Bildirimi kaldır">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+            } @empty {
+            <div class="empty">
+                <svg viewBox="0 0 24 24" fill="none" class="empty__icon">
+                    <path
+                        d="M12 3.5c-3.1 0-5.6 2.5-5.6 5.6v2.9c0 .6-.2 1.1-.6 1.6l-1.1 1.4c-.6.8-.1 2 .9 2h13c1 0 1.5-1.2.9-2l-1.1-1.4c-.4-.5-.6-1-.6-1.6V9.1c0-3.1-2.5-5.6-5.8-5.6z"
+                        stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+                </svg>
+                <p>{{ filter() === 'unread' ? 'Okunmamış bildirim yok' : 'Henüz bildirim yok' }}</p>
+            </div>
+            }
+        </div>
+    </div>
+    }
+
+</div>
