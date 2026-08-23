@@ -1,0 +1,34 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.chat-shell {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--fx-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--fx-line-soft);
+}
+
+.chat-shell__rooms {
+  flex: 0 0 340px;
+  height: 100%;
+  border-right: 1px solid var(--fx-line-soft);
+  overflow: hidden;
+}
+
+.chat-shell__history {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 860px) {
+  .chat-shell__rooms {
+    flex-basis: 280px;
+  }
+}

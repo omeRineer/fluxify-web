@@ -1,0 +1,35 @@
+<header class="topbar">
+  <div class="topbar__title">
+    <h1>Fluxify</h1>
+  </div>
+
+  <div class="topbar__actions">
+    <app-notification-popover></app-notification-popover>
+
+    <span class="topbar__divider"></span>
+
+    <div class="user-menu">
+      <button type="button" class="user-menu__trigger" (click)="toggleUserMenu()">
+        <span class="user-menu__avatar">AD</span>
+        <span class="user-menu__info">
+          <span class="user-menu__name">{{ userContext.user$().Name }}</span>
+          <span class="user-menu__role fx-mono">User</span>
+        </span>
+        <svg viewBox="0 0 24 24" fill="none" class="user-menu__chevron"
+          [class.user-menu__chevron--open]="userMenuOpen()">
+          <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+
+      @if (userMenuOpen()) {
+      <div class="user-menu__panel" role="menu">
+        <a class="user-menu__item" role="menuitem">Profil</a>
+        <a class="user-menu__item" role="menuitem">Ayarlar</a>
+        <span class="user-menu__sep"></span>
+        <a class="user-menu__item user-menu__item--danger" role="menuitem" (click)="onLogout()">Çıkış yap</a>
+      </div>
+      }
+    </div>
+  </div>
+</header>
