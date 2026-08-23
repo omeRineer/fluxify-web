@@ -40,10 +40,8 @@ export class ChatHistory extends CoreComponent {
   readonly messageStore = inject(MessageStore);
 
   readonly menuOpen = signal(false);
-
   private isTyping = false;
   private prevRoomId: string | null = null;
-
   readonly messageText = signal('');
 
   readonly roomId = toSignal(

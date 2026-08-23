@@ -4,6 +4,7 @@ export type AppNotificationStatus = 'all' | 'unread';
 
 export interface AppNotification {
   id: string;
+  sender: string | null;
   level: string;
   title: string;
   summary: string;

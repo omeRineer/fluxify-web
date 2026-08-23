@@ -12,9 +12,6 @@ import { NotificationStore } from './core/services/stores/notification.store';
   styleUrl: './app.css'
 })
 export class App extends CoreComponent {
-  protected readonly presenceHub = inject(PresenceHubService)
-  protected readonly meService = inject(MeService)
-  protected readonly notificationStore = inject(NotificationStore)
 
   constructor() {
     super();

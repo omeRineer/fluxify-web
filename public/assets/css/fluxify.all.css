@@ -1,5 +1,6 @@
 @import url("./fluxify.buttons.css");
-@import url("./fluxify.dropdown.css");
+@import url("./fluxify.dialog.css");
+@import url("./fluxify.toast.css");
 
 
 .logo-icon {

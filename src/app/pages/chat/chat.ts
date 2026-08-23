@@ -16,15 +16,6 @@ import { SpinnerComponent } from '../../shared/components/spinner.component';
   templateUrl: './chat.html',
   styleUrl: './chat.scss',
 })
-export class Chat implements OnInit, OnDestroy {
-  chatHubService = inject(ChatHubService)
-
-  ngOnDestroy(): void {
-    this.chatHubService.disconnect()
-  }
-
-  ngOnInit(): void {
-    this.chatHubService.connect()
-  }
+export class Chat  {
   
 }

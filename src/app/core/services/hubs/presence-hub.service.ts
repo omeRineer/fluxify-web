@@ -42,8 +42,9 @@ export class PresenceHubService extends SignalrHubService {
                 thumbnail: notification.thumbnail,
                 url: notification.url
             })
-            this.notificationStore.set({
+            this.notificationStore.add({
                 id: notification.id,
+                sender: null,
                 level: notification.level,
                 title: notification.title,
                 summary: notification.summary,

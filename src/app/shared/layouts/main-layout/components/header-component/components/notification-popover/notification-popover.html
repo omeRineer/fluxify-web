@@ -8,7 +8,7 @@
             <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
         </svg>
 
-        @if (unreadCount() > 0) {
+        @if (notificationStore.unreadCount() > 0) {
         <span class="bell__badge">{{ badgeLabel() }}</span>
         }
     </button>
@@ -18,12 +18,12 @@
         <header class="panel__header">
             <div class="panel__heading">
                 <h2>Bildirimler</h2>
-                @if (unreadCount() > 0) {
-                <span class="panel__count">{{ unreadCount() }} yeni</span>
+                @if (notificationStore.unreadCount()) {
+                <span class="panel__count">{{ notificationStore.unreadCount() }} yeni</span>
                 }
             </div>
 
-            @if (unreadCount() > 0) {
+            @if (notificationStore.unreadCount() > 0) {
             <button type="button" class="panel__mark-all" (click)="markAllAsRead()">
                 Tümünü okundu işaretle
             </button>
@@ -50,7 +50,7 @@
                 } @else {
                 <div class="item__icon" [attr.data-type]="notification.level">
                     @switch (notification.level) {
-                    @case ('alert') {
+                    @case ('fatal') {
                     <svg viewBox="0 0 24 24" fill="none">
                         <path d="M12 4 2.5 20h19L12 4Z" stroke="currentColor" stroke-width="1.6"
                             stroke-linejoin="round" />
@@ -78,7 +78,7 @@
                 <div class="item__body">
                     <p class="item__title">{{ notification.title }}</p>
                     <p class="item__description">{{ notification.summary }}</p>
-                    <span class="item__time">{{ notification.timestamp  }}</span>
+                    <span class="item__time">{{ notification.timestamp | timeAgo}}</span>
                 </div>
 
                 <button type="button" class="item__dismiss" (click)="dismiss($event, notification.id)"

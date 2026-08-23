@@ -20,6 +20,7 @@ import { Subscription } from 'rxjs';
 import { UserContextService } from '../../../core/services/common/userContext.service';
 import { MeService } from '../../../core/services/rest/me.service';
 import { NotificationStore } from '../../../core/services/stores/notification.store';
+import { NotificationFacade } from '../../../core/services/facades/notification-facade.service';
 
 @Component({
   selector: 'app-layout',
@@ -34,34 +35,11 @@ import { NotificationStore } from '../../../core/services/stores/notification.st
   styleUrl: './main-layout.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MainLayout implements OnInit, OnDestroy {
-  private subscriptions = new Subscription();
-  private userContext = inject(UserContextService)
-  private meService = inject(MeService)
-  private notificationStore = inject(NotificationStore)
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
-  }
+export class MainLayout implements OnInit {
+  private readonly notificationFacade = inject(NotificationFacade)
+  
   ngOnInit(): void {
-    const notificationSub = this.userContext.onSet$.subscribe(()=>{
-      this.meService.getNotifications().subscribe(res => {
-          const notifications = res.data.items.map(notification => ({
-            id: notification.id,
-            level: notification.level,
-            title: notification.title,
-            summary: notification.summary,
-            timestamp: notification.createDate,
-            url: notification.url,
-            thumbnail: notification.thumbnail,
-            read: notification.isRead
-          }));
-          this.notificationStore.load(notifications)
-
-        })
-    })
-
-    this.subscriptions.add(notificationSub)
+    this.notificationFacade.initialize().subscribe()
   }
 
 }

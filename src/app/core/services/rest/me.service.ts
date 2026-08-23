@@ -17,7 +17,4 @@ export class MeService extends BaseHttpService {
 
     
 
-    getNotifications(): Observable<ApiDataResponse<DataList<NotificationDto.List>>> {
-        return this.get<ApiDataResponse<DataList<NotificationDto.List>>>(`/notifications`)
-    }
 }

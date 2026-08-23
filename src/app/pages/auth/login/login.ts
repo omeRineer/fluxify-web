@@ -6,15 +6,17 @@ import { catchError, finalize, tap, throwError } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../core/services/common/toast.service';
 import { LoginRequest } from '../../../core/models/common/auth.models';
+import { ButtonComponent } from "../../../shared/components/button.component";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule
-  ],
+    FormsModule,
+    ButtonComponent
+],
   templateUrl: './login.html',
-  styleUrl: './login.css',
+  styleUrl: './login.scss',
 })
 export class Login extends CoreComponent {
   private authService = inject(AuthService);
@@ -23,6 +25,10 @@ export class Login extends CoreComponent {
   password = signal('');
   errorMessage = signal<string | null>(null);
   showPassword = signal(false);
+
+  togglePasswordVisibility(): void {
+    this.showPassword.update(v => !v);
+  }
 
   onLogin(): void {
     const userNameVal = this.username().trim();
