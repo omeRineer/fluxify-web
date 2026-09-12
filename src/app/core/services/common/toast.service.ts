@@ -46,14 +46,14 @@ export class ToastService {
     const {
       title = '',
       message = '',
-      level = 'info',
+      type = 'info',
       thumbnail,
       url,
       duration = 4000
     } = options;
 
     const toast = this.document.createElement('div');
-    toast.className = `custom-toast ${level}`;
+    toast.className = `custom-toast ${type}`;
 
     if (url) {
       toast.classList.add('toast-clickable');
@@ -63,10 +63,10 @@ export class ToastService {
     let mediaContent = '';
     if (thumbnail) {
       mediaContent = `<img src="${thumbnail}" class="toast-custom-img" alt="toast-img">`;
-    } else if (level === 'loading') {
+    } else if (type === 'loading') {
       mediaContent = `<div class="toast-spinner"></div>`;
-    } else if (this.icons[level]) {
-      mediaContent = this.icons[level];
+    } else if (this.icons[type]) {
+      mediaContent = this.icons[type];
     }
 
     toast.innerHTML = `
@@ -88,7 +88,7 @@ export class ToastService {
 
     let timer: ReturnType<typeof setTimeout> | null = null;
 
-    if (level !== 'loading' && duration > 0) {
+    if (type !== 'loading' && duration > 0) {
       const progressBar = this.document.createElement('div');
       progressBar.className = 'toast-progress-bar';
       progressBar.style.transition = `transform ${duration}ms linear`;
@@ -126,23 +126,23 @@ export class ToastService {
   }
 
   public success(message: string, title?: string, options?: Partial<ToastOptions>): ToastRef {
-    return this.fire({ ...options, message, title, level: 'success' });
+    return this.fire({ ...options, message, title, type: 'success' });
   }
 
   public error(message: string, title?: string, options?: Partial<ToastOptions>): ToastRef {
-    return this.fire({ ...options, message, title, level: 'error' });
+    return this.fire({ ...options, message, title, type: 'error' });
   }
 
   public info(message: string, title?: string, options?: Partial<ToastOptions>): ToastRef {
-    return this.fire({ ...options, message, title, level: 'info' });
+    return this.fire({ ...options, message, title, type: 'info' });
   }
 
   public warning(message: string, title?: string, options?: Partial<ToastOptions>): ToastRef {
-    return this.fire({ ...options, message, title, level: 'warning' });
+    return this.fire({ ...options, message, title, type: 'warning' });
   }
 
   public chat(message: string, title?: string, thumbnail?: string): ToastRef {
-    return this.fire({ message, title, level: 'chat', thumbnail });
+    return this.fire({ message, title, type: 'chat', thumbnail });
   }
 
   public dismiss(toast: HTMLElement): void {

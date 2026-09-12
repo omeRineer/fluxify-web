@@ -1,8 +1,10 @@
+import { QueryOptions } from "../common/http.models";
+
 export namespace NotificationDto{
     export interface List{
         id:string;
         sender:string;
-        level:string;
+        type:string;
         contentType:string;
         title:string;
         summary:string;
@@ -15,7 +17,7 @@ export namespace NotificationDto{
     export interface Detail{
         id:string;
         sender:string;
-        level:string;
+        type:string;
         contentType:string;
         title:string;
         summary:string;
@@ -24,4 +26,9 @@ export namespace NotificationDto{
         createDate:Date;
         isRead:boolean;
     }
+}
+
+export interface NotificationQuery extends QueryOptions{
+    isRead:boolean;
+    lastDate?:string;
 }

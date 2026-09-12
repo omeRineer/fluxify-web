@@ -1,7 +1,7 @@
 export interface NotificationPayload {
     id:string;
     date:Date;
-    level:string;
+    type:string;
     title:string;
     summary:string;
     url?:string;

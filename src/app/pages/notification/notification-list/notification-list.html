@@ -1,0 +1,149 @@
+<div class="page">
+    <header class="page__header">
+        <div>
+            <h1>Bildirimler</h1>
+            <p>Hesabınla ilgili tüm bildirimler burada listelenir.</p>
+        </div>
+
+        @if (notificationStore.unreadCount() > 0) {
+        <button type="button" class="fx-btn fx-btn--ghost" (click)="markAllAsRead()">
+            Tümünü okundu işaretle
+        </button>
+        }
+    </header>
+
+    <section class="stats">
+        <div class="stat-card">
+            <span class="stat-card__label">Tümü</span>
+            <span class="stat-card__value">{{ visibleNotifications().length }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-card__label">Okunmamış</span>
+            <span class="stat-card__value stat-card__value--accent">{{ badgeLabel() }}</span>
+        </div>
+    </section>
+
+    <section class="toolbar">
+
+        <div class="chips">
+            @for (option of typeFilters; track option.value) {
+            <button type="button" class="chip" [class.chip--active]="selectedType() === option.value"
+                (click)="setTypeFilter(option.value)">
+                {{ option.label }}
+            </button>
+            }
+        </div>
+<!-- 
+        <button type="button" class="toggle" [class.toggle--active]="onlyUnread()" (click)="toggleUnreadOnly()">
+            <span class="toggle__dot"></span>
+            Sadece okunmamış
+        </button> -->
+    </section>
+
+    <section class="list">
+        @if (isEmpty()) {
+        <div class="empty">
+            <svg viewBox="0 0 24 24" fill="none" class="empty__icon">
+                <path
+                    d="M12 3.5c-3.1 0-5.6 2.5-5.6 5.6v2.9c0 .6-.2 1.1-.6 1.6l-1.1 1.4c-.6.8-.1 2 .9 2h13c1 0 1.5-1.2.9-2l-1.1-1.4c-.4-.5-.6-1-.6-1.6V9.1c0-3.1-2.5-5.6-5.8-5.6z"
+                    stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+            <p>Aramanla eşleşen bildirim bulunamadı.</p>
+        </div>
+        } @else {
+        <div class="group">
+            @for (n of visibleNotifications(); track n.id) {
+            <article class="row" [class.row--unread]="!n.read" (click)="openDetail(n)">
+                <span class="row__marker" [class.row__marker--visible]="!n.read"></span>
+
+                @if (n.thumbnail) {
+                <img class="row__thumbnail" [src]="n.thumbnail" alt="" />
+                } @else {
+                <span class="row__icon" [attr.data-level]="n.type">
+                    @switch (n.type) {
+                    @case ('success') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    }
+                    @case ('error') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" />
+                    </svg>
+                    }
+                    @case ('warning') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 4 2.5 20h19L12 4Z" stroke="currentColor" stroke-width="1.6"
+                            stroke-linejoin="round" />
+                        <path d="M12 10v4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        <circle cx="12" cy="17.2" r="0.9" fill="currentColor" />
+                    </svg>
+                    }
+                    @case ('chat') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M4 5.5h16a1 1 0 0 1 1 1V15a1 1 0 0 1-1 1H9.8L5.4 19.4a.6.6 0 0 1-1-.47V16H4a1 1 0 0 1-1-1V6.5a1 1 0 0 1 1-1Z"
+                            stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                    </svg>
+                    }
+                    @case ('info') {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+                        <path d="M12 11v5.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                        <circle cx="12" cy="8.3" r="0.9" fill="currentColor" />
+                    </svg>
+                    }
+                    @default {
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path
+                            d="M12 3.5c-3.1 0-5.6 2.5-5.6 5.6v2.9c0 .6-.2 1.1-.6 1.6l-1.1 1.4c-.6.8-.1 2 .9 2h13c1 0 1.5-1.2.9-2l-1.1-1.4c-.4-.5-.6-1-.6-1.6V9.1c0-3.1-2.5-5.6-5.8-5.6z"
+                            stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" />
+                    </svg>
+                    }
+                    }
+                </span>
+                }
+
+                <div class="row__body">
+                    <p class="row__title">
+                        {{ n.title }}
+                    </p>
+                    <p class="row__summary">{{ n.summary }}</p>
+                </div>
+
+                <div class="row__meta">
+                    <span class="row__time">{{ n.timestamp | timeAgo }}</span>
+
+                    <div class="row__actions">
+                        <button type="button" class="row__action"
+                            [title]="n.read ? 'Okunmadı işaretle' : 'Okundu işaretle'">
+                            @if (n.read) {
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="4" fill="currentColor" />
+                            </svg>
+                            } @else {
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            }
+                        </button>
+
+                        <button type="button" class="row__action" title="Kaldır" (click)="dismiss($event, n.id)">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.6"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+            }
+        </div>
+        }
+    </section>
+</div>

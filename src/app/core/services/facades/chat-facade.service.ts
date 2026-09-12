@@ -69,7 +69,7 @@ export class ChatFacade {
     create(title: string, userIds: string[]): Observable<void> {
 
         const loadingToast = this.toastService.fire({
-            level: 'loading',
+            type: 'loading',
             message: 'Yeni sohbet grubu oluşturuluyor'
         });
 

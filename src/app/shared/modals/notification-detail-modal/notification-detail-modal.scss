@@ -31,11 +31,11 @@
     height: 20px;
   }
 
-  &[data-level='success'] { color: var(--fx-success); background: var(--fx-success-soft); border-color: transparent; }
-  &[data-level='error']   { color: var(--fx-danger);  background: var(--fx-danger-soft);  border-color: transparent; }
-  &[data-level='warning'] { color: var(--fx-warning); background: var(--fx-warning-soft); border-color: transparent; }
-  &[data-level='info']    { color: var(--fx-azure);   background: rgba(79, 127, 255, 0.14); border-color: transparent; }
-  &[data-level='chat']    { color: var(--fx-violet);  background: rgba(139, 92, 246, 0.14); border-color: transparent; }
+  &[data-type='success'] { color: var(--fx-success); background: var(--fx-success-soft); border-color: transparent; }
+  &[data-type='error']   { color: var(--fx-danger);  background: var(--fx-danger-soft);  border-color: transparent; }
+  &[data-type='warning'] { color: var(--fx-warning); background: var(--fx-warning-soft); border-color: transparent; }
+  &[data-type='info']    { color: var(--fx-azure);   background: rgba(79, 127, 255, 0.14); border-color: transparent; }
+  &[data-type='chat']    { color: var(--fx-violet);  background: rgba(139, 92, 246, 0.14); border-color: transparent; }
 }
 
 .detail__heading {

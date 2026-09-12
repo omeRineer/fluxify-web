@@ -8,6 +8,7 @@ export type UserContextInfo = {
     NameSpace:string | null;
     Token: string |null;
     isAuthenticated:boolean;
+    Date:Date | null;
 }
 
 export const INITIAL_USER_CONTEXT: UserContextInfo = {
@@ -19,5 +20,6 @@ export const INITIAL_USER_CONTEXT: UserContextInfo = {
     NameSpaceId: null,
     NameSpace: null,
     Token: null,
-    isAuthenticated: false
+    isAuthenticated: false,
+    Date: null
 };

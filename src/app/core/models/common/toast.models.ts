@@ -1,9 +1,9 @@
-export type ToastLevel = 'success' | 'info' | 'warning' | 'error' | 'loading' | 'chat';
+export type ToastType = 'success' | 'info' | 'warning' | 'error' | 'loading' | 'chat';
 
 export class ToastOptions {
   title?: string;
   message: string;
-  level?: string;
+  type?: string;
   thumbnail?: string;
   url?: string;
   duration?: number;

@@ -7,8 +7,8 @@
     @if (notification.thumbnail) {
     <img class="detail__thumbnail" [src]="notification.thumbnail" alt="" />
     } @else {
-    <span class="detail__icon" [attr.data-level]="notification.level">
-      @switch (notification.level) {
+    <span class="detail__icon" [attr.data-type]="notification.type">
+      @switch (notification.type) {
       @case ('fatal') {
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M7 7l10 10M17 7 7 17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />

@@ -29,7 +29,8 @@ export class UserContextService {
     set(context: UserContextInfo): void {
         this.user.set({
             ...context,
-            isAuthenticated: true
+            isAuthenticated: true,
+            Date: new Date()
         });
 
         this.onSet.next();

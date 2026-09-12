@@ -8,6 +8,7 @@ import { MainLayout } from './shared/layouts/main-layout/main-layout';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { NotFoundComponent } from './shared/static/not-found.component';
+import { NotificationList } from './pages/notification/notification-list/notification-list';
 
 export const routes: Routes = [
     {
@@ -17,6 +18,7 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: Dashboard },
+            { path: 'notifications', component: NotificationList },
             {
                 path: 'chat',
                 component: Chat,

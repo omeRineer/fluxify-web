@@ -6,7 +6,17 @@ import { BaseStore } from "../common/store.service";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationStore extends BaseStore<AppNotification> {
-    readonly unreadCount = computed(() => this.entities().filter(n => !n.read).length);
+    readonly unreadCount = signal<number>(0);
 
-    
+    setUnreadCount(count: number): void {
+        this.unreadCount.set(count);
+    }
+
+    incrementUnreadCount(): void {
+        this.unreadCount.update(count => count + 1);
+    }
+
+    decrementUnreadCount(): void {
+        this.unreadCount.update(count => Math.max(0, count - 1));
+    }
 }

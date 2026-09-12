@@ -37,7 +37,7 @@ export class PresenceHubService extends SignalrHubService {
             this.toastService.fire({
                 title:notification.title,
                 message: notification.summary,
-                level: notification.level,
+                type: notification.type,
                 playSound: true,
                 thumbnail: notification.thumbnail,
                 url: notification.url
@@ -45,12 +45,13 @@ export class PresenceHubService extends SignalrHubService {
             this.notificationStore.add({
                 id: notification.id,
                 sender: null,
-                level: notification.level,
+                type: notification.type,
                 title: notification.title,
                 summary: notification.summary,
                 timestamp: new Date(notification.date),
                 read: false
             })
+            this.notificationStore.incrementUnreadCount();
            
         })
     }

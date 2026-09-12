@@ -13,12 +13,16 @@ import { NotificationStore } from '../../../../../../../core/services/stores/not
 import { CoreComponent } from '../../../../../../../core/components/core.component';
 import { NotificationFacade } from '../../../../../../../core/services/facades/notification-facade.service';
 import { NotificationDetailModalComponent } from '../../../../../../modals/notification-detail-modal/notification-detail-modal';
+import { RouterLink } from "@angular/router";
+import { SpinnerComponent } from '../../../../../../components/spinner.component';
 
 @Component({
   selector: 'app-notification-popover',
   imports: [
-    TimeAgoPipe
-  ],
+    TimeAgoPipe,
+    RouterLink,
+    SpinnerComponent
+],
   templateUrl: './notification-popover.html',
   styleUrl: './notification-popover.scss',
 })
@@ -28,16 +32,17 @@ export class NotificationPopover extends CoreComponent {
   private readonly notificationFacade = inject(NotificationFacade);
 
   readonly isOpen = signal(false);
-  readonly filter = signal<AppNotificationStatus>('all');
+  readonly currentPage = signal(0);
+  readonly hasMore = signal(true);
 
   readonly visibleNotifications = computed(() => {
     const list = this.notificationStore.entities();
-    return this.filter() === 'unread' ? list.filter(n => !n.read) : list;
+    return list.filter(n => !n.read);
   });
 
   readonly badgeLabel = computed(() => {
     const count = this.notificationStore.unreadCount();
-    return count > 9 ? '9+' : String(count);
+    return count > 99 ? '99+' : String(count);
   });
 
   toggle(): void {
@@ -46,10 +51,6 @@ export class NotificationPopover extends CoreComponent {
 
   close(): void {
     this.isOpen.set(false);
-  }
-
-  setFilter(mode: AppNotificationStatus): void {
-    this.filter.set(mode);
   }
 
   select(notification: AppNotification): void {
@@ -91,5 +92,29 @@ export class NotificationPopover extends CoreComponent {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     this.close();
+  }
+
+  onScroll(event: Event): void {
+    
+    const target = event.target as HTMLElement;
+    if (!target) return;
+
+    // Alt sınıra 20px kala tetikle (threshold)
+    const threshold = 20;
+    const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + threshold;
+
+    if (isAtBottom && !this.isLoading() && this.hasMore()) {
+      this.loadNextPage();
+    }
+  }
+
+  private loadNextPage(): void {
+    this.isLoading.set(true);
+    this.currentPage.update(page => page + 1);
+
+    this.notificationFacade.getPagedList(this.currentPage(), 10, false)
+      .subscribe(res=> {
+        this.isLoading.set(false);
+      });
   }
 }

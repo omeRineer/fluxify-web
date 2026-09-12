@@ -28,7 +28,7 @@ export class NotificationDetailModalComponent extends CoreModalComponent impleme
           this.notification.set({
             id: res.data.id,
             sender: res.data.sender,
-            level: res.data.level,
+            type: res.data.type,
             title: res.data.title,
             summary: res.data.summary,
             timestamp: res.data.createDate,

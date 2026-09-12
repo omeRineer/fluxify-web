@@ -79,8 +79,6 @@ export abstract class BaseHttpService {
             errorMessage = error.error?.message || `Sunucu Hatası: ${error.status} - ${error.statusText}`;
         }
 
-        console.error(`[Fluxify HTTP Error] [/${error.url?.split('/').pop()}]:`, errorMessage);
-
         // Uygulamanın geri kalanına hatayı fırlat
         return throwError(() => new Error(errorMessage));
     }

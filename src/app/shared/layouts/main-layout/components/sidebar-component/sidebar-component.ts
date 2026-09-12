@@ -20,6 +20,11 @@ export class SidebarComponent {
       route: '/dashboard'
     },
     {
+      label: 'Bildirimler',
+      icon: 'fa-solid fa-bell',
+      route: '/notifications'
+    },
+    {
       label: 'Sohbet',
       icon: 'fa-solid fa-comment',
       route: '/chat'

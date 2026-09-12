@@ -15,23 +15,26 @@ import { NotificationService } from '../rest/notification.service';
 import { AppNotification } from '../../models/store/notification.models';
 import { NotificationDto } from '../../models/rest/notification.models';
 import { ApiDataResponse } from '../../models/common/api.models';
+import { UserContextService } from '../common/userContext.service';
+import { PageDataList } from '../../models/common/data.models';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationFacade {
     private readonly presenceHub = inject(PresenceHubService)
+    private readonly userContextService = inject(UserContextService)
     private readonly notificationService = inject(NotificationService)
     private readonly notificationStore = inject(NotificationStore)
 
     initialize(): Observable<void> {
         this.presenceHub.connect();
 
-        return this.notificationService.getList().pipe(
+        return this.notificationService.getList({ page: 0, size: 10, isRead: false, lastDate: this.userContextService.user$().Date?.toISOString() }).pipe(
             tap(res => {
 
-                const notifications = res.data.items.map(notification => ({
+                const notifications = res.data.data.map(notification => ({
                     id: notification.id,
                     sender: notification.sender,
-                    level: notification.level,
+                    type: notification.type,
                     title: notification.title,
                     summary: notification.summary,
                     timestamp: notification.createDate,
@@ -40,10 +43,32 @@ export class NotificationFacade {
                     read: notification.isRead
                 }));
                 this.notificationStore.load(notifications)
+                this.notificationStore.setUnreadCount(res.data.totalCount)
 
             }),
 
             map(() => void 0)
+        )
+    }
+
+    getPagedList(page:number, size:number, isRead:boolean): Observable<ApiDataResponse<PageDataList<NotificationDto.List>>> {
+        return this.notificationService.getList({ page, size, isRead, lastDate: this.userContextService.user$().Date?.toISOString() }).pipe(
+            tap(res => {
+
+                const notifications = res.data.data.map(notification => ({
+                    id: notification.id,
+                    sender: notification.sender,
+                    type: notification.type,
+                    title: notification.title,
+                    summary: notification.summary,
+                    timestamp: notification.createDate,
+                    url: notification.url,
+                    thumbnail: notification.thumbnail,
+                    read: notification.isRead
+                }));
+                this.notificationStore.addRange(notifications)
+
+            })
         )
     }
 
@@ -59,36 +84,35 @@ export class NotificationFacade {
             return;
         }
 
-        this.notificationStore.update({
-            ...notification,
-            read: true
-        });
-    }
+        this.notificationService.markAsRead([id]).subscribe(res => {
+            if (res.success) {
+                this.notificationStore.update({
+                    ...notification,
+                    read: true
+                });
+                this.notificationStore.decrementUnreadCount();
+            }
+        })
 
-    markAsUnread(id: string): void {
 
-        const notification = this.notificationStore.find(id);
-
-        if (!notification || !notification.read) {
-            return;
-        }
-
-        this.notificationStore.update({
-            ...notification,
-            read: false
-        });
     }
 
     markAllAsRead(): void {
 
-        const updated = this.notificationStore
-            .entities()
-            .map(x => ({
-                ...x,
-                read: true
-            }));
+        this.notificationService.markAsRead(this.notificationStore.entities().map(x => x.id)).subscribe(res => {
+            if (res.success) {
+                const updated = this.notificationStore
+                    .entities()
+                    .map(x => ({
+                        ...x,
+                        read: true
+                    }));
 
-        this.notificationStore.load(updated);
+                this.notificationStore.load(updated);
+            }
+        })
+
+
     }
 
     dismiss(id: string): void {
