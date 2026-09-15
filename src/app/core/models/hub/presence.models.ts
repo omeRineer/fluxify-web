@@ -4,7 +4,7 @@ export interface NotificationPayload {
     type:string;
     title:string;
     summary:string;
-    url?:string;
+    properties?: Record<string, any>;
     thumbnail?:string;
 }
 

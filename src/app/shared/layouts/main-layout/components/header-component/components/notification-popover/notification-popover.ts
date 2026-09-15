@@ -32,12 +32,12 @@ export class NotificationPopover extends CoreComponent {
   private readonly notificationFacade = inject(NotificationFacade);
 
   readonly isOpen = signal(false);
-  readonly currentPage = signal(0);
+  readonly currentPage = computed(() => this.notificationFacade.currentPage());
   readonly hasMore = signal(true);
 
   readonly visibleNotifications = computed(() => {
     const list = this.notificationStore.entities();
-    return list.filter(n => !n.read);
+    return list.filter(n => !n.read).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
 
   readonly badgeLabel = computed(() => {
@@ -67,10 +67,6 @@ export class NotificationPopover extends CoreComponent {
   dismiss(event: MouseEvent, id: string): void {
     event.stopPropagation();
     this.notificationFacade.dismiss(id);
-  }
-
-  markAllAsRead(): void {
-    this.notificationFacade.markAllAsRead();
   }
 
   @HostListener('document:click', ['$event'])
@@ -110,7 +106,7 @@ export class NotificationPopover extends CoreComponent {
 
   private loadNextPage(): void {
     this.isLoading.set(true);
-    this.currentPage.update(page => page + 1);
+    this.notificationFacade.currentPage.update(page => page + 1);
 
     this.notificationFacade.getPagedList(this.currentPage(), 10, false)
       .subscribe(res=> {

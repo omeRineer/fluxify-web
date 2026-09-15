@@ -34,7 +34,7 @@ export class NotificationService extends BaseHttpService {
         return this.get<ApiDataResponse<NotificationDto.Detail>>(`/${id}`)
     }
 
-    markAsRead(notifications: string[]): Observable<ApiResponse> {
-        return this.post<ApiResponse>("/mark-as-read", notifications)
+    markAsRead(notification: string): Observable<ApiResponse> {
+        return this.post<ApiResponse>("/mark-as-read", JSON.stringify(notification))
     }
 }

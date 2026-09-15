@@ -19,11 +19,11 @@ export abstract class BaseStore<TEntity extends { id: string }> {
   }
 
   add(item: TEntity): void {
-    this.state.update(items => [item, ...items]);
+    this.state.update(items => [...items, item]);
   }
 
   addRange(items: TEntity[]): void {
-    this.state.update(current => [...items, ...current]);
+    this.state.update(current => [...current, ...items]);
   }
 
   update(item: TEntity): void {

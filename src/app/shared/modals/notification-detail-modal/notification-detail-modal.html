@@ -49,14 +49,14 @@
 
     <div class="detail__heading">
       <h3>{{ notification.title }}</h3>
-      <span class="detail__timeStamp">{{ notification.timestamp | smartDate }}</span>
+      <span class="detail__timeStamp">{{ notification.createDate | smartDate }}</span>
     </div>
   </div>
 
   <p class="detail__summary">{{ notification.summary }}</p>
 
-  @if (notification.url) {
-  <a class="detail__link" [href]="notification.url" target="_blank" rel="noopener">
+  @if (notification.properties?.["url"]) {
+  <a class="detail__link" [href]="notification.properties?.['url']" target="_blank" rel="noopener">
     <svg viewBox="0 0 24 24" fill="none">
       <path d="M9 15 20 4M20 4h-6M20 4v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
         stroke-linejoin="round" />

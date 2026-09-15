@@ -9,8 +9,8 @@ export namespace NotificationDto{
         title:string;
         summary:string;
         thumbnail?:string;
-        url?:string;
         createDate:Date;
+        properties?: Record<string, any>;
         isRead:boolean;
     }
 
@@ -19,11 +19,12 @@ export namespace NotificationDto{
         sender:string;
         type:string;
         contentType:string;
+        content:string;
         title:string;
         summary:string;
         thumbnail?:string;
-        url?:string;
         createDate:Date;
+        properties?: Record<string, any>;
         isRead:boolean;
     }
 }

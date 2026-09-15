@@ -40,10 +40,11 @@ export class PresenceHubService extends SignalrHubService {
                 type: notification.type,
                 playSound: true,
                 thumbnail: notification.thumbnail,
-                url: notification.url
+                url: notification.properties?.["url"]
             })
             this.notificationStore.add({
                 id: notification.id,
+                date: notification.date,
                 sender: null,
                 type: notification.type,
                 title: notification.title,

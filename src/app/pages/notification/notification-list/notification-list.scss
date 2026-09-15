@@ -6,12 +6,64 @@
 }
 
 .page {
-  max-width: 860px;
+  display: grid;
+  grid-template-columns: 250px 1fr; /* Sol panel 320px, sağ panel kalan alanı kaplar */
+  gap: 32px;
+  align-items: start;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px 64px;
+  padding: 24px;
+}
+
+.page__sidebar {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
+  position: sticky;
+  top: 24px; /* Sayfa kaydırılsa bile sol menü sabit kalır */
+}
+
+/* Filtre Çiplerinin Dikey Hizalanması (Sol panele uyum sağlaması için) */
+.chips {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.chip {
+  width: 100%;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+/* Sağ Panel (Main) */
+.page__main {
+  min-width: 0; /* Grid içerik taşmasını önler */
+  overflow-y: auto; /* İçerik taşarsa kaydırma çubuğu ekler */
+  height: calc(100vh - 120px); /* Header yüksekliğini çıkararak tam ekran yapar */
+
+}
+
+/* Mobil / Tablet Uyumluluğu (Responsive Breakpoint) */
+@media (max-width: 768px) {
+  .page {
+    grid-template-columns: 1fr; /* Mobil cihazlarda üst üste geçer */
+    gap: 20px;
+  }
+
+  .page__sidebar {
+    position: static;
+  }
+
+  .chips {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    width: auto;
+  }
 }
 
 .page__header {
@@ -36,7 +88,6 @@
 /* ---- Stats ---- */
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 

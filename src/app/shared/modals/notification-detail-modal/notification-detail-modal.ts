@@ -6,6 +6,7 @@ import { TimeAgoPipe } from "../../../core/pipes/time-ago.pipe";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SpinnerComponent } from "../../components/spinner.component";
 import { SmartDatePipe } from '../../../core/pipes/smart-date.pipe';
+import { NotificationDto } from '../../../core/models/rest/notification.models';
 
 @Component({
   selector: 'app-notification-detail-modal',
@@ -16,7 +17,7 @@ import { SmartDatePipe } from '../../../core/pipes/smart-date.pipe';
 export class NotificationDetailModalComponent extends CoreModalComponent implements OnInit {
   readonly notificationFacade = inject(NotificationFacade)
   private destroyRef = inject(DestroyRef);
-  notification = signal<AppNotification | null>(null);
+  notification = signal<NotificationDto.Detail | null>(null);
 
 
   ngOnInit(): void {
@@ -25,17 +26,7 @@ export class NotificationDetailModalComponent extends CoreModalComponent impleme
     .pipe(takeUntilDestroyed(this.destroyRef))
     .subscribe({
         next: (res) => {
-          this.notification.set({
-            id: res.data.id,
-            sender: res.data.sender,
-            type: res.data.type,
-            title: res.data.title,
-            summary: res.data.summary,
-            timestamp: res.data.createDate,
-            url: res.data.url,
-            thumbnail: res.data.thumbnail,
-            read: res.data.isRead
-          });
+          this.notification.set(res.data);
           this.isLoading.set(false);
         },
         error: () => this.isLoading.set(false)

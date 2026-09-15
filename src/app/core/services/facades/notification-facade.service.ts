@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { map, Observable, take, tap } from 'rxjs';
 
 import { ChatService } from '../rest/chat.service';
 import { ChatHubService } from '../hubs/chat-hub.service';
@@ -25,6 +25,20 @@ export class NotificationFacade {
     private readonly notificationService = inject(NotificationService)
     private readonly notificationStore = inject(NotificationStore)
 
+    readonly currentPage = signal<number>(0);
+    readonly hasMore = signal<boolean>(true);
+
+    constructor() {
+        effect(() => {
+            const notifications = this.notificationStore.entities();
+            const unreadCount = notifications.filter(n => !n.read).length;
+
+            if (unreadCount < 10 && this.hasMore()) {
+                this.fetchNextBatch();
+            }
+        });
+    }
+
     initialize(): Observable<void> {
         this.presenceHub.connect();
 
@@ -37,8 +51,9 @@ export class NotificationFacade {
                     type: notification.type,
                     title: notification.title,
                     summary: notification.summary,
+                    date: notification.createDate,
                     timestamp: notification.createDate,
-                    url: notification.url,
+                    properties: notification.properties,
                     thumbnail: notification.thumbnail,
                     read: notification.isRead
                 }));
@@ -51,18 +66,19 @@ export class NotificationFacade {
         )
     }
 
-    getPagedList(page:number, size:number, isRead:boolean): Observable<ApiDataResponse<PageDataList<NotificationDto.List>>> {
+    getPagedList(page: number, size: number, isRead: boolean): Observable<ApiDataResponse<PageDataList<NotificationDto.List>>> {
         return this.notificationService.getList({ page, size, isRead, lastDate: this.userContextService.user$().Date?.toISOString() }).pipe(
             tap(res => {
 
                 const notifications = res.data.data.map(notification => ({
                     id: notification.id,
                     sender: notification.sender,
+                    date: notification.createDate,
                     type: notification.type,
                     title: notification.title,
                     summary: notification.summary,
                     timestamp: notification.createDate,
-                    url: notification.url,
+                    properties: notification.properties,
                     thumbnail: notification.thumbnail,
                     read: notification.isRead
                 }));
@@ -70,6 +86,25 @@ export class NotificationFacade {
 
             })
         )
+    }
+
+    private fetchNextBatch(): void {
+        const nextPage = this.currentPage() + 1;
+
+        this.getPagedList(nextPage, 10, false)
+            .pipe(take(1)) // Bellek sızıntısını önlemek için tek seferde kapanmasını sağla
+            .subscribe({
+                next: (response) => {
+                    this.currentPage.set(nextPage);
+
+                    if (!response || response.data.data.length === 0) {
+                        this.hasMore.set(false);
+                    }
+                },
+                error: (err) => {
+                    console.error('Bildirimler yüklenirken hata oluştu:', err);
+                }
+            });
     }
 
     get(id: string): Observable<ApiDataResponse<NotificationDto.Detail>> {
@@ -84,31 +119,13 @@ export class NotificationFacade {
             return;
         }
 
-        this.notificationService.markAsRead([id]).subscribe(res => {
+        this.notificationService.markAsRead(id).subscribe(res => {
             if (res.success) {
                 this.notificationStore.update({
                     ...notification,
                     read: true
                 });
                 this.notificationStore.decrementUnreadCount();
-            }
-        })
-
-
-    }
-
-    markAllAsRead(): void {
-
-        this.notificationService.markAsRead(this.notificationStore.entities().map(x => x.id)).subscribe(res => {
-            if (res.success) {
-                const updated = this.notificationStore
-                    .entities()
-                    .map(x => ({
-                        ...x,
-                        read: true
-                    }));
-
-                this.notificationStore.load(updated);
             }
         })
 
