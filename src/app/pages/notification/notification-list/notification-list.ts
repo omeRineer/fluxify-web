@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, signal, untracked, ViewChild } from '@angular/core';
 import { NotificationFacade } from '../../../core/services/facades/notification-facade.service';
 import { NotificationStore } from '../../../core/services/stores/notification.store';
 import { AppNotification, AppNotificationStatus } from '../../../core/models/store/notification.models';
@@ -14,30 +14,95 @@ import { SpinnerComponent } from '../../../shared/components/spinner.component';
   styleUrl: './notification-list.scss',
 })
 export class NotificationList extends CoreComponent {
+
+  @ViewChild('notificationScroll') scrollContainer!: ElementRef<HTMLElement>;
+
   notificationFacade = inject(NotificationFacade);
   notificationStore = inject(NotificationStore);
-  typeFilters: { value: string, label: string }[] = [{ value: 'all', label: 'Tümü' }, { value: 'unread', label: 'Okunmamış' }]
+  typeFilters: { value: boolean, label: string }[] = [{ value: false, label: 'Okunmamış' }, { value: true, label: 'Okunmuş' }]
 
-  readonly selectedType = signal<string>('all');
-  readonly filter = signal<string>('all');
+  readonly localNotifications = signal<AppNotification[]>([]);
+
+  readonly selectedType = signal<boolean>(false);
   readonly isEmpty = signal<boolean>(false);
-  readonly currentPage = computed(() => this.notificationFacade.currentPage());
-  readonly visibleNotifications = computed(() => {
-    const list = this.notificationStore.entities();
-    return list.filter(n => !n.read).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  });
+  readonly hasMore = signal<boolean>(true);
+  readonly currentPage = signal<number>(0);
+  readonly startDate = signal<string>('');
+  readonly endDate = signal<string>('');
 
   readonly badgeLabel = computed(() => {
     const count = this.notificationStore.unreadCount();
     return count > 9999 ? '9999+' : String(count);
   });
 
-  setFilter(mode: AppNotificationStatus): void {
-    this.filter.set(mode);
+  constructor() {
+    super();
+
+    effect(() => {
+      const type = this.selectedType();
+      const start = this.startDate();
+      const end = this.endDate();
+
+      untracked(() => {
+        this.fetchNotifications(0, true);
+      });
+    }, { allowSignalWrites: true });
   }
 
-  setTypeFilter(type: string): void {
+  fetchNotifications(page: number, isReset: boolean = false): void {
+    if (this.isLoading()) return;
+    this.isLoading.set(true);
+
+    this.notificationFacade.getFilteredList(page, 10, this.selectedType()).subscribe({
+      next: res => {
+        this.currentPage.set(page);
+        const notifications = res.data.data.map(notification => ({
+          id: notification.id,
+          sender: notification.sender,
+          date: notification.createDate,
+          type: notification.type,
+          title: notification.title,
+          summary: notification.summary,
+          timestamp: notification.createDate,
+          properties: notification.properties,
+          thumbnail: notification.thumbnail,
+          read: notification.isRead
+        }));
+
+        if (isReset) {
+          this.localNotifications.set(notifications);
+          if (this.scrollContainer?.nativeElement) {
+            this.scrollContainer.nativeElement.scrollTop = 0;
+          }
+        } else {
+          // Append / Infinite Scroll eklemesi
+          this.localNotifications.update(prev => [...prev, ...notifications]);
+        }
+
+        this.hasMore.set(notifications.length >= 10);
+        this.isLoading.set(false);
+      }
+    })
+  }
+
+  setType(type: boolean): void {
     this.selectedType.set(type);
+  }
+
+  resetFilters(): void {
+    this.selectedType.set(false);
+    this.startDate.set('');
+    this.endDate.set('');
+  }
+
+  onStartDateChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.startDate.set(target.value);
+  }
+
+  onEndDateChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.endDate.set(target.value);
   }
 
   openDetail(notification: AppNotification): void {
@@ -57,9 +122,8 @@ export class NotificationList extends CoreComponent {
   }
 
   onScroll(event: Event): void {
-    console.log('Scroll event triggered:', event);
     const target = event.target as HTMLElement;
-    if (!target) return;
+    if (!target || this.isLoading() || !this.hasMore()) return;
 
     // Kalan mesafe 100px altına indiğinde ve yükleme devam etmiyorken tetikle
     const threshold = 100;
@@ -72,12 +136,8 @@ export class NotificationList extends CoreComponent {
   }
 
   private loadNextPage(): void {
-    this.isLoading.set(true);
-    this.notificationFacade.currentPage.update(page => page + 1);
+    this.currentPage.update(page => page + 1);
 
-    this.notificationFacade.getPagedList(this.currentPage(), 10, false)
-      .subscribe(res=> {
-        this.isLoading.set(false);
-      });
+    this.fetchNotifications(this.currentPage(), false);
   }
 }

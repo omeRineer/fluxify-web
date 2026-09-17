@@ -88,6 +88,10 @@ export class NotificationFacade {
         )
     }
 
+    getFilteredList(page: number, size: number, isRead: boolean): Observable<ApiDataResponse<PageDataList<NotificationDto.List>>> {
+        return this.notificationService.getList({ page, size, isRead, lastDate: this.userContextService.user$().Date?.toISOString() });
+    }
+
     private fetchNextBatch(): void {
         const nextPage = this.currentPage() + 1;
 
