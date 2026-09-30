@@ -7,6 +7,7 @@ import { BaseStore } from "../common/store.service";
 @Injectable({ providedIn: 'root' })
 export class NotificationStore extends BaseStore<AppNotification> {
     readonly unreadCount = signal<number>(0);
+    readonly reads = signal<string[]>([]);
 
     setUnreadCount(count: number): void {
         this.unreadCount.set(count);

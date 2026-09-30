@@ -1,5 +1,7 @@
 # Stage 1: Build stage
 FROM node:20-alpine AS builder
+EXPOSE 443
+EXPOSE 80
 WORKDIR /app
 
 # Hem package.json hem de güncellediğimiz package-lock.json imaja kopyalanıyor
@@ -16,5 +18,4 @@ RUN npm run build -- --configuration=production
 FROM nginx:alpine
 COPY nginx.Production.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist/fluxify-web/browser /usr/share/nginx/html
-EXPOSE 4200
 CMD ["nginx", "-g", "daemon off;"]

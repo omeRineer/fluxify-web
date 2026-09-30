@@ -31,8 +31,7 @@
         </div>
       </div>
 
-      <!-- 2. Tarih Aralığı Filtresi -->
-      <div class="filter-group">
+      <!-- <div class="filter-group">
         <label class="filter-group__label">Tarih Aralığı</label>
         <div class="date-range">
           <input 
@@ -51,7 +50,6 @@
         </div>
       </div>
 
-      <!-- 3. Tip / Kategori Filtresi -->
       <div class="filter-group">
         <label class="filter-group__label">Bildirim Türü</label>
         <div class="chips">
@@ -65,11 +63,11 @@
             </button>
           }
         </div>
-      </div>
+      </div> -->
       
       <!-- Filtre Temizle Butonu (Opsiyonel) -->
       <button type="button" class="btn-reset" (click)="resetFilters()">
-        Filtreleri Temizle
+        Temizle
       </button>
     </section>
   </aside>
@@ -87,7 +85,7 @@
         </div>
       } @else {
         <div class="group">
-          @for (n of localNotifications(); track n.id) {
+          @for (n of visibleNotifications(); track n.id) {
             <article class="row" [class.row--unread]="!n.read" (click)="openDetail(n)">
               <span class="row__marker" [class.row__marker--visible]="!n.read"></span>
 

@@ -3,7 +3,9 @@ import {
   Component,
   ElementRef,
   HostListener,
+  OnInit,
   computed,
+  effect,
   inject,
   signal
 } from '@angular/core';
@@ -15,6 +17,7 @@ import { NotificationFacade } from '../../../../../../../core/services/facades/n
 import { NotificationDetailModalComponent } from '../../../../../../modals/notification-detail-modal/notification-detail-modal';
 import { RouterLink } from "@angular/router";
 import { SpinnerComponent } from '../../../../../../components/spinner.component';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-notification-popover',
@@ -22,28 +25,54 @@ import { SpinnerComponent } from '../../../../../../components/spinner.component
     TimeAgoPipe,
     RouterLink,
     SpinnerComponent
-],
+  ],
   templateUrl: './notification-popover.html',
   styleUrl: './notification-popover.scss',
 })
-export class NotificationPopover extends CoreComponent {
-  private readonly host = inject(ElementRef<HTMLElement>);
+export class NotificationPopover extends CoreComponent implements OnInit {
+
+  readonly host = inject(ElementRef<HTMLElement>);
   readonly notificationStore = inject(NotificationStore);
-  private readonly notificationFacade = inject(NotificationFacade);
+  readonly notificationFacade = inject(NotificationFacade);
+
 
   readonly isOpen = signal(false);
-  readonly currentPage = computed(() => this.notificationFacade.currentPage());
+  readonly currentPage = signal(0);
   readonly hasMore = signal(true);
 
+  readonly localNotifications = signal<AppNotification[]>([]);
   readonly visibleNotifications = computed(() => {
-    const list = this.notificationStore.entities();
-    return list.filter(n => !n.read).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const newNotifications = this.notificationStore.entities();
+    const localNotifications = this.localNotifications();
+    const readNotifications = this.notificationStore.reads();
+
+    const uniqueNotifications = newNotifications.filter(
+      newNotification => !localNotifications.some(localNotification => localNotification.id === newNotification.id)
+    );
+    const combinedNotifications = [...uniqueNotifications, ...localNotifications];
+    return combinedNotifications.filter(n => !n.read && !readNotifications.some(x => x === n.id)).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
 
   readonly badgeLabel = computed(() => {
     const count = this.notificationStore.unreadCount();
     return count > 99 ? '99+' : String(count);
   });
+
+  constructor(){
+    super()
+
+    effect(()=>{
+      const currentNotifications = this.visibleNotifications()
+
+      if(currentNotifications.length < 10 && !this.isLoading() && this.hasMore()){
+        this.loadPage(this.currentPage() + 1)
+      }
+    })
+  }
+
+  ngOnInit(): void {
+    this.loadPage(this.currentPage());
+  }
 
   toggle(): void {
     this.isOpen.update(open => !open);
@@ -91,7 +120,7 @@ export class NotificationPopover extends CoreComponent {
   }
 
   onScroll(event: Event): void {
-    
+
     const target = event.target as HTMLElement;
     if (!target) return;
 
@@ -100,17 +129,38 @@ export class NotificationPopover extends CoreComponent {
     const isAtBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + threshold;
 
     if (isAtBottom && !this.isLoading() && this.hasMore()) {
-      this.loadNextPage();
+      this.loadPage(this.currentPage() + 1);
     }
   }
 
-  private loadNextPage(): void {
+  private loadPage(page: number): void {
     this.isLoading.set(true);
-    this.notificationFacade.currentPage.update(page => page + 1);
+    const size = 10 + this.notificationStore.entities().length;
 
-    this.notificationFacade.getPagedList(this.currentPage(), 10, false)
-      .subscribe(res=> {
+    this.notificationFacade.getList({ page: page, size: size, isRead: false }).subscribe({
+      next: res => {
+        if (res.success) {
+          const notifications = res.data.data.map(notification => ({
+            id: notification.id,
+            sender: notification.sender,
+            type: notification.type,
+            title: notification.title,
+            summary: notification.summary,
+            date: notification.createDate,
+            timestamp: notification.createDate,
+            properties: notification.properties,
+            thumbnail: notification.thumbnail,
+            read: notification.isRead
+          }));
+          this.localNotifications.update(current => [...current, ...notifications]);
+
+          this.currentPage.set(page);
+          this.hasMore.set(res.data.data.length > 0);
+        }
+      },
+      complete: () => {
         this.isLoading.set(false);
-      });
+      }
+    });
   }
 }

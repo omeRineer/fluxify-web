@@ -22,6 +22,14 @@ export class NotificationList extends CoreComponent {
   typeFilters: { value: boolean, label: string }[] = [{ value: false, label: 'Okunmamış' }, { value: true, label: 'Okunmuş' }]
 
   readonly localNotifications = signal<AppNotification[]>([]);
+  readonly visibleNotifications = computed(() => {
+    const readNotifications = this.notificationStore.reads();
+
+    return this.localNotifications().map(m => ({
+      ...m,
+      read: m.read || readNotifications.some(x => x === m.id) ? m.read = true : m.read = false
+    }))
+  })
 
   readonly selectedType = signal<boolean>(false);
   readonly isEmpty = signal<boolean>(false);
@@ -47,13 +55,29 @@ export class NotificationList extends CoreComponent {
         this.fetchNotifications(0, true);
       });
     }, { allowSignalWrites: true });
+
+    effect(() => {
+      const storeEntities = this.notificationStore.entities();
+      const isUnreadSelected = !this.selectedType(); // false ise Okunmamışlar seçilidir
+
+      // Sadece 'Okunmamışlar' sekmesindeysek ve Store'da veri varsa birleştir
+      if (isUnreadSelected && storeEntities.length > 0) {
+        untracked(() => {
+          const storeNotifications = this.notificationStore.entities();
+          const newNotifications = storeNotifications.filter(n => !n.read && !this.localNotifications().some(local => local.id === n.id));
+
+          this.localNotifications.update(prev => [...newNotifications, ...prev]);
+        });
+      }
+    });
   }
 
   fetchNotifications(page: number, isReset: boolean = false): void {
     if (this.isLoading()) return;
     this.isLoading.set(true);
+    const size = 10 + this.notificationStore.entities().length;
 
-    this.notificationFacade.getFilteredList(page, 10, this.selectedType()).subscribe({
+    this.notificationFacade.getList({ page, size: size, isRead: this.selectedType() }).subscribe({
       next: res => {
         this.currentPage.set(page);
         const notifications = res.data.data.map(notification => ({
