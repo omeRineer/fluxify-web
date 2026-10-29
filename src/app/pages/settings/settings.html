@@ -1,0 +1,259 @@
+<!--
+  State hooks:
+    .settings-nav__link.is-active   -> current section in the left nav
+    .savebar.is-visible             -> "unsaved changes" bar slides up
+  Toggles are native checkboxes (.toggle > input + .toggle__track) so
+  [checked] / :checked just work with forms and your own handlers.
+  Action hooks (data-action): discard-changes, save-changes, end-session,
+  end-all-sessions, delete-account
+-->
+<div class="page">
+  <header class="page__header">
+    <h1>Ayarlar</h1>
+    <p>Uygulama tercihlerini, bildirimleri ve güvenliğini yönet.</p>
+  </header>
+
+  <div class="settings-grid">
+
+    <!-- ===== Left: section nav ===== -->
+    <nav class="settings-nav" aria-label="Ayar bölümleri">
+      <a class="settings-nav__link is-active" href="#general">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5 7h9M18 7h1M5 17h1M10 17h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.6" />
+          <circle cx="8" cy="17" r="2" stroke="currentColor" stroke-width="1.6" />
+        </svg>
+        Genel
+      </a>
+      <a class="settings-nav__link" href="#notifications">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3.5c-3.1 0-5.6 2.5-5.6 5.6v2.9c0 .6-.2 1.1-.6 1.6l-1.1 1.4c-.6.8-.1 2 .9 2h13c1 0 1.5-1.2.9-2l-1.1-1.4c-.4-.5-.6-1-.6-1.6V9.1c0-3.1-2.5-5.6-5.8-5.6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M9.8 19a2.3 2.3 0 0 0 4.4 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+        Bildirimler
+      </a>
+      <a class="settings-nav__link" href="#security">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 3.5 5 6v5.5c0 4.2 2.8 7.3 7 9 4.2-1.7 7-4.8 7-9V6l-7-2.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="m9 12 2.2 2.2L15.2 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Güvenlik
+      </a>
+      <a class="settings-nav__link settings-nav__link--danger" href="#danger">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M12 4 2.5 20h19L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M12 10v4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          <circle cx="12" cy="17.2" r="0.9" fill="currentColor" />
+        </svg>
+        Tehlikeli bölge
+      </a>
+    </nav>
+
+    <!-- ===== Right: sections ===== -->
+    <div class="settings-content">
+
+      <!-- Genel -->
+      <section class="card" id="general">
+        <header class="card__header">
+          <h2>Genel</h2>
+          <p>Dil, saat dilimi ve tarih biçimi.</p>
+        </header>
+        <div class="card__body">
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Dil</h3>
+              <p>Arayüzde kullanılacak dil.</p>
+            </div>
+            <div class="setting-row__control">
+              <select class="fx-select">
+                <option selected>Türkçe</option>
+                <option>English</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Saat dilimi</h3>
+              <p>Bildirim ve mesaj saatleri buna göre gösterilir.</p>
+            </div>
+            <div class="setting-row__control">
+              <select class="fx-select">
+                <option selected>(UTC+03:00) İstanbul</option>
+                <option>(UTC+00:00) Londra</option>
+                <option>(UTC+01:00) Berlin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Tarih biçimi</h3>
+              <p>Listelerde ve ayrıntılarda tarihlerin yazılışı.</p>
+            </div>
+            <div class="setting-row__control">
+              <select class="fx-select">
+                <option selected>27.10.2026</option>
+                <option>2026-10-27</option>
+                <option>10/27/2026</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bildirimler -->
+      <section class="card" id="notifications">
+        <header class="card__header">
+          <h2>Bildirimler</h2>
+          <p>Hangi bildirimleri, nasıl almak istediğini seç.</p>
+        </header>
+        <div class="card__body">
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Masaüstü bildirimleri</h3>
+              <p>Uygulama arka plandayken sistem bildirimi göster.</p>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span></label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Bildirim sesi</h3>
+              <p>Yeni bildirim geldiğinde ses çal.</p>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span></label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Sohbet mesajları</h3>
+              <p>Gruplardan ve kişilerden gelen yeni mesajlar.</p>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span></label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Sistem uyarıları</h3>
+              <p>Bağlantı kopması, kota ve bakım duyuruları.</p>
+            </div>
+            <label class="toggle"><input type="checkbox" checked /><span class="toggle__track"></span></label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>E-posta özeti</h3>
+              <p>Günlük okunmamış bildirim özeti gönder.</p>
+            </div>
+            <label class="toggle"><input type="checkbox" /><span class="toggle__track"></span></label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Sessiz saatler</h3>
+              <p>Bu aralıkta bildirim sesi ve masaüstü bildirimi kapalı olur.</p>
+            </div>
+            <div class="setting-row__control time-range">
+              <input class="fx-input fx-input--sm time-input" type="time" value="23:00" />
+              <span class="time-range__sep">–</span>
+              <input class="fx-input fx-input--sm time-input" type="time" value="07:00" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Güvenlik -->
+      <section class="card" id="security">
+        <header class="card__header">
+          <h2>Güvenlik</h2>
+          <p>Hesabına erişimi koru ve açık oturumları yönet.</p>
+        </header>
+        <div class="card__body">
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>İki adımlı doğrulama</h3>
+              <p>Girişte şifrenin yanında ek bir kod iste.</p>
+            </div>
+            <label class="toggle"><input type="checkbox" /><span class="toggle__track"></span></label>
+          </div>
+
+          <div class="sessions">
+            <div class="sessions__head">
+              <h3>Açık oturumlar</h3>
+              <button type="button" class="fx-btn fx-btn--link fx-btn--sm" data-action="end-all-sessions">Diğerlerini sonlandır</button>
+            </div>
+
+            <div class="session">
+              <span class="session__icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="3.5" y="5" width="17" height="11" rx="1.8" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M8.5 19.5h7M12 16v3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </span>
+              <div class="session__body">
+                <p class="session__name">Windows · Fluxify Desktop <span class="badge badge--current mono">Bu cihaz</span></p>
+                <p class="session__meta">İstanbul, TR · Şimdi aktif</p>
+              </div>
+            </div>
+
+            <div class="session">
+              <span class="session__icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="3.5" y="5" width="17" height="11" rx="1.8" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M8.5 19.5h7M12 16v3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </span>
+              <div class="session__body">
+                <p class="session__name">Chrome · macOS</p>
+                <p class="session__meta">Ankara, TR · 2 gün önce</p>
+              </div>
+              <button type="button" class="fx-btn fx-btn--ghost fx-btn--sm" data-action="end-session">Sonlandır</button>
+            </div>
+
+            <div class="session">
+              <span class="session__icon">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="7" y="3.5" width="10" height="17" rx="2.2" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M11 17.5h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+              </span>
+              <div class="session__body">
+                <p class="session__name">Android · Fluxify Mobile</p>
+                <p class="session__meta">İstanbul, TR · 5 gün önce</p>
+              </div>
+              <button type="button" class="fx-btn fx-btn--ghost fx-btn--sm" data-action="end-session">Sonlandır</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tehlikeli bölge -->
+      <section class="card card--danger" id="danger">
+        <header class="card__header">
+          <h2>Tehlikeli bölge</h2>
+          <p>Bu işlemler geri alınamaz.</p>
+        </header>
+        <div class="card__body">
+          <div class="setting-row">
+            <div class="setting-row__text">
+              <h3>Hesabı sil</h3>
+              <p>Hesabın, sohbetlerin ve bildirim geçmişin kalıcı olarak silinir.</p>
+            </div>
+            <button type="button" class="fx-btn fx-btn--danger" data-action="delete-account">Hesabı sil</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Unsaved changes bar -->
+      <div class="savebar" id="savebar">
+        <span class="savebar__text">Kaydedilmemiş değişiklikler var</span>
+        <div class="savebar__actions">
+          <button type="button" class="fx-btn fx-btn--ghost fx-btn--sm" data-action="discard-changes">Vazgeç</button>
+          <button type="button" class="fx-btn fx-btn--primary fx-btn--sm" data-action="save-changes">Kaydet</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -9,6 +9,8 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { NotFoundComponent } from './shared/static/not-found.component';
 import { NotificationList } from './pages/notification/notification-list/notification-list';
+import { Profile } from './pages/profile/profile';
+import { Settings } from './pages/settings/settings';
 
 export const routes: Routes = [
     {
@@ -17,6 +19,8 @@ export const routes: Routes = [
         canActivate: [authGuard],
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+            { path: 'me', component: Profile },
+            { path: 'settings', component: Settings },
             { path: 'dashboard', component: Dashboard },
             { path: 'notifications', component: NotificationList },
             {

@@ -1,0 +1,186 @@
+
+/* ---- Buttons ----
+   Base: .fx-btn
+   Variant (pick one): --primary  --secondary  --ghost  --outline  --danger  --success  --link
+   Size (optional, default = md): --sm  --lg
+   Modifiers: --block (full width)  --icon (square, no label)  --loading (shows .fx-spinner)
+   Use plain classes anywhere — projected modal/dialog/toast content included, no component needed. */
+.fx-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--fx-radius-md);
+  font-family: var(--fx-font-ui);
+  font-size: var(--fx-text-base);
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--fx-fast) var(--fx-ease), border-color var(--fx-fast) var(--fx-ease),
+    color var(--fx-fast) var(--fx-ease), filter var(--fx-fast) var(--fx-ease), opacity var(--fx-fast) var(--fx-ease);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+  }
+
+  &:disabled,
+  &.fx-btn--loading {
+    opacity: 0.55;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--fx-azure);
+    outline-offset: 2px;
+  }
+}
+
+/* ---- Sizes ---- */
+.fx-btn--sm {
+  height: 30px;
+  padding: 0 12px;
+  font-size: var(--fx-text-sm);
+  border-radius: var(--fx-radius-sm);
+
+  svg { width: 14px; height: 14px; }
+}
+
+.fx-btn--lg {
+  height: 46px;
+  padding: 0 22px;
+  font-size: var(--fx-text-md);
+}
+
+/* ---- Variants ---- */
+.fx-btn--primary {
+  background: var(--fx-gradient);
+  color: #fff;
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    filter: brightness(1.08);
+  }
+}
+
+.fx-btn--secondary {
+  background: var(--fx-elevated-2);
+  border-color: var(--fx-line);
+  color: var(--fx-ink);
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    border-color: var(--fx-fog);
+  }
+}
+
+.fx-btn--ghost {
+  background: var(--fx-elevated);
+  border-color: var(--fx-line);
+  color: var(--fx-mist);
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    color: var(--fx-ink);
+    border-color: var(--fx-azure);
+  }
+}
+
+.fx-btn--outline {
+  background: transparent;
+  border-color: var(--fx-line);
+  color: var(--fx-mist);
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    color: var(--fx-ink);
+    border-color: var(--fx-azure);
+    background: var(--fx-elevated);
+  }
+}
+
+.fx-btn--danger {
+  background: var(--fx-danger-soft);
+  color: var(--fx-danger);
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    background: var(--fx-danger);
+    color: #fff;
+  }
+}
+
+.fx-btn--success {
+  background: var(--fx-success-soft);
+  color: var(--fx-success);
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    background: var(--fx-success);
+    color: #0a0e1a;
+  }
+}
+
+.fx-btn--link {
+  height: auto;
+  padding: 0;
+  background: transparent;
+  color: var(--fx-azure);
+  font-weight: 600;
+
+  &:hover:not(:disabled):not(.fx-btn--loading) {
+    text-decoration: underline;
+  }
+}
+
+/* ---- Modifiers ---- */
+.fx-btn--block {
+  width: 100%;
+}
+
+.fx-btn--icon {
+  padding: 0;
+  width: 38px;
+  flex: 0 0 auto;
+}
+
+.fx-btn--icon.fx-btn--sm { width: 30px; }
+.fx-btn--icon.fx-btn--lg { width: 46px; }
+
+/* Icon-only buttons are usually low-emphasis chrome (topbar, list rows) —
+   round them and drop the border by default; still overridable per variant above. */
+.fx-btn--icon.fx-btn--ghost,
+.fx-btn--icon.fx-btn--outline {
+  border-color: transparent;
+  background: transparent;
+  color: var(--fx-mist);
+
+  &:hover:not(:disabled) {
+    background: var(--fx-elevated);
+    color: var(--fx-ink);
+    border-color: transparent;
+  }
+}
+
+/* ---- Spinner (used inside .fx-btn--loading, or standalone) ---- */
+.fx-spinner {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: currentColor;
+  border-radius: 999px;
+  animation: fx-spin 0.7s linear infinite;
+}
+
+.fx-btn--ghost .fx-spinner,
+.fx-btn--secondary .fx-spinner,
+.fx-btn--outline .fx-spinner,
+.fx-btn--link .fx-spinner {
+  border-color: var(--fx-line);
+  border-top-color: currentColor;
+}
+
+@keyframes fx-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

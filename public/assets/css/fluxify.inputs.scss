@@ -1,0 +1,448 @@
+// ==========================================================================
+// Inputs — field wrapper, text input, input group, textarea, select, checkbox, radio, switch
+// ==========================================================================
+
+/* ==========================================================================
+   Form controls
+   Base classes for use anywhere (raw HTML in dialog content included).
+   Sizes match the button scale (sm=30 / md=38 / lg=46) so inputs and buttons
+   line up when placed side by side.
+   ========================================================================== */
+
+/* ---- Field wrapper: label + control + hint/error ---- */
+.fx-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fx-label {
+  font-size: var(--fx-text-sm);
+  font-weight: 600;
+  color: var(--fx-mist);
+}
+
+.fx-field__hint {
+  font-size: var(--fx-text-xs);
+  color: var(--fx-fog);
+}
+
+.fx-field__error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--fx-text-xs);
+  color: var(--fx-danger);
+
+  svg {
+    width: 12px;
+    height: 12px;
+    flex: 0 0 auto;
+  }
+}
+
+.fx-field--error .fx-input,
+.fx-field--error .fx-textarea,
+.fx-field--error .fx-select {
+  border-color: var(--fx-danger) !important;
+}
+
+.fx-field--success .fx-input,
+.fx-field--success .fx-textarea,
+.fx-field--success .fx-select {
+  border-color: var(--fx-success) !important;
+}
+
+/* ---- Text input ---- */
+.fx-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: var(--fx-radius-md);
+  background: var(--fx-elevated-2);
+  border: 1px solid var(--fx-line-soft);
+  color: var(--fx-ink);
+  font-family: var(--fx-font-ui);
+  font-size: var(--fx-text-base);
+  outline: none;
+  transition: border-color var(--fx-fast) var(--fx-ease), background var(--fx-fast) var(--fx-ease);
+
+  &::placeholder {
+    color: var(--fx-fog);
+  }
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: var(--fx-line);
+  }
+
+  &:focus {
+    border-color: var(--fx-azure);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+/* ---- Browser quirks that matter for login forms ---- */
+
+/* Chrome/Electron autofill paints a light-blue/white fill — keep it on theme */
+.fx-input:-webkit-autofill,
+.fx-input:-webkit-autofill:hover,
+.fx-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fx-ink);
+  caret-color: var(--fx-ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--fx-elevated-2) inset;
+  box-shadow: 0 0 0 1000px var(--fx-elevated-2) inset;
+  transition: background-color 9999s ease-out 0s, border-color var(--fx-fast) var(--fx-ease);
+}
+
+/* Edge adds its own eye / clear icon; the custom toggle replaces it */
+.fx-input::-ms-reveal,
+.fx-input::-ms-clear {
+  display: none;
+}
+
+.fx-input--sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: var(--fx-text-sm);
+  border-radius: var(--fx-radius-sm);
+}
+
+.fx-input--lg {
+  height: 46px;
+  padding: 0 14px;
+  font-size: var(--fx-text-md);
+}
+
+/* ---- Input group: OPTIONAL svg icons around a text input ----
+   <div class="fx-input-group">
+     <span class="fx-input-group__icon"> <svg>…</svg> </span>                        leading icon   (optional)
+     <input class="fx-input" />
+     <span class="fx-input-group__icon fx-input-group__icon--right"> <svg>…</svg> </span>   trailing icon (optional, decorative)
+     <button class="fx-input-group__action"> <svg>…</svg> </button>                  trailing button (optional, clickable)
+   </div>
+   - Every icon is optional: add or drop them freely, the input's padding adjusts itself.
+   - Use ONE trailing element (icon--right OR action), not both.
+   - Any svg works as long as it draws with currentColor.
+   - Icon size / position follow the input size (.fx-input--sm / --lg) automatically.
+   - Icon turns azure on focus, red inside .fx-field--error, green inside .fx-field--success. */
+.fx-input-group {
+  --fx-ig-icon: 16px;
+  --fx-ig-inset: 13px;
+  --fx-ig-action: 28px;
+  --fx-ig-action-inset: 8px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &:has(.fx-input--sm) {
+    --fx-ig-icon: 14px;
+    --fx-ig-inset: 10px;
+    --fx-ig-action: 22px;
+    --fx-ig-action-inset: 4px;
+  }
+
+  &:has(.fx-input--lg) {
+    --fx-ig-icon: 18px;
+    --fx-ig-inset: 14px;
+    --fx-ig-action: 32px;
+    --fx-ig-action-inset: 7px;
+  }
+}
+
+/* ---- Icon (leading by default, --right for trailing) ---- */
+.fx-input-group__icon {
+  position: absolute;
+  left: var(--fx-ig-inset);
+  width: var(--fx-ig-icon);
+  height: var(--fx-ig-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fx-fog);
+  pointer-events: none;
+  transition: color var(--fx-fast) var(--fx-ease);
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &--right {
+    left: auto;
+    right: var(--fx-ig-inset);
+  }
+}
+
+/* ---- Trailing button (eye toggle, clear, copy, ...) ---- */
+.fx-input-group__action {
+  position: absolute;
+  right: var(--fx-ig-action-inset);
+  width: var(--fx-ig-action);
+  height: var(--fx-ig-action);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--fx-radius-sm);
+  background: none;
+  border: none;
+  color: var(--fx-fog);
+  cursor: pointer;
+  transition: color var(--fx-fast) var(--fx-ease), background var(--fx-fast) var(--fx-ease);
+
+  svg {
+    width: var(--fx-ig-icon);
+    height: var(--fx-ig-icon);
+  }
+
+  &:hover {
+    color: var(--fx-ink);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  /* toggle buttons: aria-pressed="true" (e.g. password is visible) */
+  &[aria-pressed='true'] {
+    color: var(--fx-azure);
+  }
+}
+
+/* ---- Input padding makes room only for what is actually there ---- */
+.fx-input-group:has(.fx-input-group__icon:not(.fx-input-group__icon--right)) .fx-input {
+  padding-left: calc(var(--fx-ig-inset) + var(--fx-ig-icon) + 11px);
+}
+
+.fx-input-group:has(.fx-input-group__icon--right) .fx-input {
+  padding-right: calc(var(--fx-ig-inset) + var(--fx-ig-icon) + 11px);
+}
+
+.fx-input-group:has(.fx-input-group__action) .fx-input {
+  padding-right: calc(var(--fx-ig-action-inset) + var(--fx-ig-action) + 8px);
+}
+
+/* ---- Icon colors follow the field state ---- */
+.fx-input-group:focus-within .fx-input-group__icon {
+  color: var(--fx-azure);
+}
+
+.fx-field--error .fx-input-group .fx-input-group__icon,
+.fx-field--error .fx-input-group:focus-within .fx-input-group__icon {
+  color: var(--fx-danger);
+}
+
+.fx-field--success .fx-input-group .fx-input-group__icon,
+.fx-field--success .fx-input-group:focus-within .fx-input-group__icon {
+  color: var(--fx-success);
+}
+
+.fx-input-group:has(.fx-input:disabled) {
+  .fx-input-group__icon,
+  .fx-input-group__action {
+    opacity: 0.55;
+  }
+
+  .fx-input-group__action {
+    pointer-events: none;
+  }
+}
+
+/* ---- Textarea ---- */
+.fx-textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 10px 12px;
+  border-radius: var(--fx-radius-md);
+  background: var(--fx-elevated-2);
+  border: 1px solid var(--fx-line-soft);
+  color: var(--fx-ink);
+  font-family: var(--fx-font-ui);
+  font-size: var(--fx-text-base);
+  line-height: 1.55;
+  outline: none;
+  resize: vertical;
+  transition: border-color var(--fx-fast) var(--fx-ease);
+
+  &::placeholder {
+    color: var(--fx-fog);
+  }
+
+  &:focus {
+    border-color: var(--fx-azure);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    resize: none;
+  }
+}
+
+/* ---- Select (native, restyled) ---- */
+.fx-select {
+  width: 100%;
+  height: 38px;
+  padding: 0 36px 0 12px;
+  border-radius: var(--fx-radius-md);
+  background-color: var(--fx-elevated-2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b93ab' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 15px;
+  border: 1px solid var(--fx-line-soft);
+  color: var(--fx-ink);
+  font-family: var(--fx-font-ui);
+  font-size: var(--fx-text-base);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--fx-fast) var(--fx-ease);
+
+  &:focus {
+    border-color: var(--fx-azure);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  option {
+    background: var(--fx-elevated);
+    color: var(--fx-ink);
+  }
+}
+
+/* ---- Checkbox ---- */
+.fx-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fx-mist);
+  font-size: var(--fx-text-sm);
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+}
+
+.fx-checkbox__box {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--fx-line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: background var(--fx-fast) var(--fx-ease), border-color var(--fx-fast) var(--fx-ease);
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+.fx-checkbox--checked .fx-checkbox__box {
+  background: var(--fx-gradient);
+  border-color: transparent;
+}
+
+.fx-checkbox--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---- Radio ---- */
+.fx-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fx-mist);
+  font-size: var(--fx-text-sm);
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+}
+
+.fx-radio__box {
+  position: relative;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid var(--fx-line);
+  transition: border-color var(--fx-fast) var(--fx-ease);
+}
+
+.fx-radio--checked .fx-radio__box {
+  border-color: var(--fx-azure);
+}
+
+.fx-radio--checked .fx-radio__box::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 999px;
+  background: var(--fx-gradient);
+}
+
+.fx-radio--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---- Switch ---- */
+.fx-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--fx-mist);
+  font-size: var(--fx-text-sm);
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+}
+
+.fx-switch__track {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--fx-elevated-2);
+  border: 1px solid var(--fx-line-soft);
+  transition: background var(--fx-fast) var(--fx-ease), border-color var(--fx-fast) var(--fx-ease);
+}
+
+.fx-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--fx-mist);
+  transition: transform var(--fx-fast) var(--fx-ease), background var(--fx-fast) var(--fx-ease);
+}
+
+.fx-switch--checked .fx-switch__track {
+  background: var(--fx-gradient);
+  border-color: transparent;
+}
+
+.fx-switch--checked .fx-switch__thumb {
+  transform: translateX(16px);
+  background: #fff;
+}
+
+.fx-switch--disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
