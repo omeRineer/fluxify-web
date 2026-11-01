@@ -3,7 +3,7 @@ import { BaseHttpService } from "../common/http.service";
 import { Observable } from "rxjs";
 import { ApiDataResponse, ApiResponse } from "../../models/common/api.models";
 import { DataList, PageDataList } from "../../models/common/data.models";
-import { NotificationDto, NotificationQuery } from "../../models/rest/notification.models";
+import { NotificationDto, NotificationQuery } from "../../models/dto/notification.models";
 import { HttpParams } from "@angular/common/http";
 
 

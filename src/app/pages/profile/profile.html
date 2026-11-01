@@ -18,30 +18,42 @@
 
       <div class="profile-card__avatar">
         <span class="avatar">ÖF</span>
-        <button type="button" class="avatar-edit" data-action="change-avatar" aria-label="Fotoğrafı değiştir" title="Fotoğrafı değiştir">
+        <button type="button" class="avatar-edit" data-action="change-avatar" aria-label="Fotoğrafı değiştir"
+          title="Fotoğrafı değiştir">
           <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 8.5a1.5 1.5 0 0 1 1.5-1.5H8l1.2-1.8a1 1 0 0 1 .85-.5h3.9a1 1 0 0 1 .85.5L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+            <path
+              d="M4 8.5a1.5 1.5 0 0 1 1.5-1.5H8l1.2-1.8a1 1 0 0 1 .85-.5h3.9a1 1 0 0 1 .85.5L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-9Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
             <circle cx="12" cy="13" r="3.2" stroke="currentColor" stroke-width="1.5" />
           </svg>
         </button>
       </div>
 
-      <h2 class="profile-card__name">Ömer Faruk</h2>
-      <p class="profile-card__email">omer@fluxify.com</p>
+      <h2 class="profile-card__name">{{profile()?.name}}</h2>
+      <p class="profile-card__title">{{profile()?.title}}</p>
 
       <div class="profile-card__chips">
-        <span class="role-chip mono">User</span>
         <span class="status-chip mono" data-status="online"><span class="status-chip__dot"></span>Çevrimiçi</span>
       </div>
 
       <dl class="meta">
-        <div class="meta__row"><dt>Kullanıcı adı</dt><dd class="mono">@omerfaruk</dd></div>
-        <div class="meta__row"><dt>Üyelik</dt><dd>12 Mart 2025</dd></div>
-        <div class="meta__row"><dt>Son giriş</dt><dd>Bugün, 09:42</dd></div>
+        <div class="meta__row">
+          <dt>Kullanıcı adı</dt>
+          <dd class="mono">@omerfaruk</dd>
+        </div>
+        <div class="meta__row">
+          <dt>Üyelik</dt>
+          <dd>{{profile()?.accountDate}}</dd>
+        </div>
+        <div class="meta__row">
+          <dt>Son giriş</dt>
+          <dd>Bugün, 09:42</dd>
+        </div>
       </dl>
 
       <div class="stats">
-        <div class="stats__item"><span class="stats__value stats__value--accent">24</span><span class="stats__label">Sohbet</span></div>
+        <div class="stats__item"><span class="stats__value stats__value--accent">24</span><span
+            class="stats__label">Sohbet</span></div>
         <div class="stats__item"><span class="stats__value">1.2K</span><span class="stats__label">Mesaj</span></div>
         <div class="stats__item"><span class="stats__value">86</span><span class="stats__label">Bildirim</span></div>
       </div>
@@ -56,46 +68,32 @@
           <p>Diğer kullanıcıların seni nasıl gördüğünü belirler.</p>
         </header>
 
-        <form class="card__body" id="profile-form">
+        <form [formGroup]="form" (submit)="save()" class="card__body" id="profile-form">
           <div class="form-grid">
             <div class="fx-field">
               <label class="fx-label" for="firstName">Ad</label>
-              <input id="firstName" class="fx-input" type="text" value="Ömer" />
-            </div>
-            <div class="fx-field">
-              <label class="fx-label" for="lastName">Soyad</label>
-              <input id="lastName" class="fx-input" type="text" value="Faruk" />
-            </div>
-
-            <div class="fx-field">
-              <label class="fx-label" for="username">Kullanıcı adı</label>
-              <input id="username" class="fx-input" type="text" value="omerfaruk" />
+              <input id="firstName" formControlName="name" class="fx-input" type="text"/>
             </div>
             <div class="fx-field">
               <label class="fx-label" for="email">E-posta</label>
-              <input id="email" class="fx-input" type="email" value="omer@fluxify.com" />
+              <input id="email" formControlName="email" class="fx-input" type="email" />
             </div>
 
             <div class="fx-field">
               <label class="fx-label" for="phone">Telefon</label>
-              <input id="phone" class="fx-input" type="tel" placeholder="+90 5xx xxx xx xx" />
+              <input id="phone" formControlName="phone" class="fx-input" type="tel" placeholder="+90 5xx xxx xx xx" />
             </div>
             <div class="fx-field">
               <label class="fx-label" for="title">Unvan</label>
-              <input id="title" class="fx-input" type="text" value="Software Developer" />
-            </div>
-
-            <div class="fx-field span-2">
-              <label class="fx-label" for="about">Hakkında</label>
-              <textarea id="about" class="fx-textarea" rows="3" maxlength="160" placeholder="Kendinden kısaca bahset..."></textarea>
-              <span class="fx-field__hint">En fazla 160 karakter.</span>
+              <input id="title" formControlName="title" class="fx-input" type="text" value="Software Developer" />
             </div>
           </div>
         </form>
 
         <footer class="card__footer">
           <button type="button" class="fx-btn fx-btn--ghost" data-action="reset-profile">Vazgeç</button>
-          <button type="submit" form="profile-form" class="fx-btn fx-btn--primary" data-action="save-profile">Kaydet</button>
+          <button type="submit" form="profile-form" class="fx-btn fx-btn--primary"
+            data-action="save-profile">Kaydet</button>
         </footer>
       </section>
 
@@ -109,26 +107,31 @@
           <div class="form-grid">
             <div class="fx-field span-2">
               <label class="fx-label" for="currentPassword">Mevcut şifre</label>
-              <input id="currentPassword" class="fx-input" type="password" autocomplete="current-password" placeholder="••••••••" />
+              <input id="currentPassword" class="fx-input" type="password" autocomplete="current-password"
+                placeholder="••••••••" />
             </div>
 
             <div class="fx-field">
               <label class="fx-label" for="newPassword">Yeni şifre</label>
-              <input id="newPassword" class="fx-input" type="password" autocomplete="new-password" placeholder="••••••••" />
+              <input id="newPassword" class="fx-input" type="password" autocomplete="new-password"
+                placeholder="••••••••" />
               <div class="strength" data-level="3">
-                <span class="strength__bar"></span><span class="strength__bar"></span><span class="strength__bar"></span><span class="strength__bar"></span>
+                <span class="strength__bar"></span><span class="strength__bar"></span><span
+                  class="strength__bar"></span><span class="strength__bar"></span>
                 <span class="strength__text mono">Güçlü</span>
               </div>
             </div>
             <div class="fx-field">
               <label class="fx-label" for="confirmPassword">Yeni şifre (tekrar)</label>
-              <input id="confirmPassword" class="fx-input" type="password" autocomplete="new-password" placeholder="••••••••" />
+              <input id="confirmPassword" class="fx-input" type="password" autocomplete="new-password"
+                placeholder="••••••••" />
             </div>
           </div>
         </form>
 
         <footer class="card__footer">
-          <button type="submit" form="password-form" class="fx-btn fx-btn--primary" data-action="save-password">Şifreyi güncelle</button>
+          <button type="submit" form="password-form" class="fx-btn fx-btn--primary" data-action="save-password">Şifreyi
+            güncelle</button>
         </footer>
       </section>
 

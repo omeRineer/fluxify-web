@@ -13,7 +13,7 @@ import { PresenceHubService } from '../hubs/presence-hub.service';
 import { MeService } from '../rest/me.service';
 import { NotificationService } from '../rest/notification.service';
 import { AppNotification } from '../../models/store/notification.models';
-import { NotificationDto, NotificationQuery } from '../../models/rest/notification.models';
+import { NotificationDto, NotificationQuery } from '../../models/dto/notification.models';
 import { ApiDataResponse } from '../../models/common/api.models';
 import { UserContextService } from '../common/userContext.service';
 import { PageDataList } from '../../models/common/data.models';

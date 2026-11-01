@@ -6,7 +6,7 @@ import { TimeAgoPipe } from "../../../core/pipes/time-ago.pipe";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SpinnerComponent } from "../../components/spinner.component";
 import { SmartDatePipe } from '../../../core/pipes/smart-date.pipe';
-import { NotificationDto } from '../../../core/models/rest/notification.models';
+import { NotificationDto } from '../../../core/models/dto/notification.models';
 
 @Component({
   selector: 'app-notification-detail-modal',

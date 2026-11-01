@@ -24,8 +24,8 @@
 
       @if (userMenuOpen()) {
       <div class="user-menu__panel" role="menu">
-        <a class="user-menu__item" role="menuitem">Profil</a>
-        <a class="user-menu__item" role="menuitem">Ayarlar</a>
+        <a class="user-menu__item" routerLink="/me" role="menuitem">Profil</a>
+        <a class="user-menu__item" routerLink="/settings" role="menuitem">Ayarlar</a>
         <span class="user-menu__sep"></span>
         <a class="user-menu__item user-menu__item--danger" role="menuitem" (click)="onLogout()">Çıkış yap</a>
       </div>

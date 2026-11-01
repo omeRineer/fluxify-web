@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, HostListener, inject, Output, signal } from '@angular/core';
 import { AuthService } from '../../../../../core/services/rest/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserContextService } from '../../../../../core/services/common/userContext.service';
 import { PresenceHubService } from '../../../../../core/services/hubs/presence-hub.service';
 import { SmartDatePipe } from '../../../../../core/pipes/smart-date.pipe';
@@ -11,7 +11,8 @@ import { NotificationPopover } from "./components/notification-popover/notificat
   standalone: true,
   imports: [
     SmartDatePipe,
-    NotificationPopover
+    NotificationPopover,
+    RouterLink
 ],
   templateUrl: './header-component.html',
   styleUrl: './header-component.scss',
